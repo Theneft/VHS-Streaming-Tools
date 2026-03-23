@@ -385,7 +385,7 @@
 
 <script>
 const CLIENT_ID    = '7d67e91f4b3e43a9989cf9da41af18a8';
-const REDIRECT_URI = 'https://theneft.github.io/VHS-Streaming-Tools';
+const REDIRECT_URI = 'https://theneft.github.io/VHS-Streaming-Tools/';
 const SCOPES = [
   'user-library-read','user-library-modify',
   'playlist-read-private','playlist-read-collaborative',
@@ -447,22 +447,30 @@ async function fetchUserProfile(role) {
   const r = await spotifyGet('https://api.spotify.com/v1/me',tokens[role]);
   if (!r) return;
   users[role] = r;
+  const name = r.display_name || r.id;
+
   if (role==='source') {
     document.getElementById('sourceUser').style.display='block';
-    document.getElementById('sourceUserName').textContent=r.display_name||r.id;
+    document.getElementById('sourceUserName').textContent=name;
     document.getElementById('sourceBtn').style.display='none';
     checkTransferReady();
   } else if (role==='dest') {
     document.getElementById('destUser').style.display='block';
-    document.getElementById('destUserName').textContent=r.display_name||r.id;
+    document.getElementById('destUserName').textContent=name;
     document.getElementById('destBtn').style.display='none';
     checkTransferReady();
   } else if (role==='delete') {
     document.getElementById('deleteUser').style.display='block';
-    document.getElementById('deleteUserName').textContent=r.display_name||r.id;
+    document.getElementById('deleteUserName').textContent=name;
     document.getElementById('deleteAccBtn').style.display='none';
     document.getElementById('deleteBtn').disabled=false;
   }
+
+  // Update main auth section header
+  document.getElementById('statusDot').classList.add('active');
+  document.getElementById('statusText').textContent='Conectado — ' + name;
+  document.getElementById('authSubtext').textContent='Cuenta de Spotify vinculada correctamente';
+  document.getElementById('authSection').classList.add('connected');
 }
 
 function connectSource()  { startOAuth('source'); }

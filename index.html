@@ -205,7 +205,7 @@
       <h1><span class="grad">VHS Streaming</span> <span class="plain">– Spotify Tools</span></h1>
       <p>MUSIC ACCOUNT MANAGER</p>
     </div>
-    <span class="version-tag">v4.3</span>
+    <span class="version-tag">v4.6</span>
   </header>
 
   <div class="hero">
@@ -381,12 +381,42 @@ async function genVer(){const a=new Uint8Array(64);crypto.getRandomValues(a);ret
 async function genChal(v){const d=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(v));return btoa(String.fromCharCode(...new Uint8Array(d))).replace(/\+/g,'-').replace(/\//g,'_').replace(/=/g,'');}
 
 async function startOAuth(role){
+  // Use Implicit Grant (like Trikatuka) for dest to get less restricted tokens
+  if (role === 'dest' || role === 'source') {
+    const params = new URLSearchParams({
+      response_type: 'token',
+      client_id: CLIENT_ID,
+      scope: SCOPES,
+      redirect_uri: REDIRECT_URI,
+      state: role,
+      show_dialog: 'false'
+    });
+    window.location = 'https://accounts.spotify.com/authorize?' + params;
+    return;
+  }
   const v=await genVer(),c=await genChal(v);
   localStorage.setItem('pkce_v_'+role,v);localStorage.setItem('pkce_r',role);
   window.location='https://accounts.spotify.com/authorize?'+new URLSearchParams({response_type:'code',client_id:CLIENT_ID,scope:SCOPES,redirect_uri:REDIRECT_URI,code_challenge_method:'S256',code_challenge:c,state:role});
 }
 
 async function handleCallback(){
+  // Handle Implicit Grant - token comes in URL hash
+  const hash = window.location.hash.substring(1);
+  if (hash && hash.includes('access_token')) {
+    const hashParams = new URLSearchParams(hash);
+    const accessToken = hashParams.get('access_token');
+    const role = hashParams.get('state');
+    console.log('Implicit Grant callback - role:', role, 'token:', !!accessToken);
+    if (accessToken && role) {
+      window.history.replaceState({}, '', window.location.pathname);
+      const tk = role==='source'?'tok_src':role==='dest'?'tok_dst':'tok_del';
+      tokens[role] = accessToken;
+      localStorage.setItem(tk, accessToken);
+      await fetchProfile(role);
+      return;
+    }
+  }
+
   const p=new URLSearchParams(window.location.search),code=p.get('code');
   const stateRole=p.get('state');
   console.log('handleCallback - code:', !!code, 'state:', stateRole);
@@ -798,14 +828,29 @@ async function pushPlaylists(playlists, srcToken, dstToken) {
           .filter(uri => uri && !uri.includes('spotify:local:'));
         console.log(`Batch ${i}: ${batch.length} items -> ${uris.length} valid uris`);
         if (uris.length) {
-          const addRes = await spReq('POST', `https://api.spotify.com/v1/playlists/${newPl.id}/tracks`, dstToken, { uris });
-          console.log('POST tracks status:', addRes.status, 'uris:', uris.length, 'sample:', uris[0]);
-          if (addRes.ok) {
-            addedCount += uris.length;
-          } else {
-            const errTxt = await addRes.text().catch(()=>'');
-            console.error('POST tracks failed:', errTxt);
-            log(`⚠ Fallo POST tracks: ${addRes.status}`, 'error');
+          // Direct fetch like Trikatuka does it
+          let addOk = false;
+          while (true) {
+            const addRes = await fetch(`https://api.spotify.com/v1/playlists/${newPl.id}/tracks`, {
+              method: 'POST',
+              headers: {
+                'Authorization': 'Bearer ' + dstToken,
+                'Content-Type': 'application/json'
+              },
+              body: JSON.stringify({ uris, position: i })
+            });
+            console.log('POST tracks status:', addRes.status, 'uris:', uris.length);
+            if (addRes.status === 429) {
+              const w = parseInt(addRes.headers.get('Retry-After') || '3') * 1000;
+              await sleep(w); continue;
+            }
+            if (addRes.ok) { addedCount += uris.length; addOk = true; }
+            else {
+              const errTxt = await addRes.text().catch(() => '');
+              console.error('POST tracks failed:', addRes.status, errTxt);
+              log(`⚠ Fallo agregar tracks (${addRes.status}): ${errTxt}`, 'error');
+            }
+            break;
           }
           await sleep(600);
         }

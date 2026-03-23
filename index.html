@@ -205,7 +205,7 @@
       <h1><span class="grad">VHS Streaming</span> <span class="plain">– Spotify Tools</span></h1>
       <p>MUSIC ACCOUNT MANAGER</p>
     </div>
-    <span class="version-tag">v2.6</span>
+    <span class="version-tag">v2.7</span>
   </header>
 
   <div class="hero">
@@ -481,10 +481,19 @@ async function spAll(url,token,key='items'){
   }
   return items;
 }
-async function spReq(method,url,token,body=null){
+async function spReq(method,url,token,body=null,imageBase64=null,imageType='image/jpeg'){
   while(true){
-    const opts={method,headers:{Authorization:'Bearer '+token,'Content-Type':'application/json'}};
-    if(body)opts.body=JSON.stringify(body);
+    let opts;
+    if(imageBase64){
+      // For image upload - send raw base64
+      const binary=atob(imageBase64);
+      const bytes=new Uint8Array(binary.length);
+      for(let i=0;i<binary.length;i++)bytes[i]=binary.charCodeAt(i);
+      opts={method,headers:{Authorization:'Bearer '+token,'Content-Type':imageType},body:bytes.buffer};
+    } else {
+      opts={method,headers:{Authorization:'Bearer '+token,'Content-Type':'application/json'}};
+      if(body)opts.body=JSON.stringify(body);
+    }
     const r=await fetch(url,opts);
     if(r.status===429){await sleep(parseInt(r.headers.get('Retry-After')||'3')*1000);continue;}
     if(r.status>=400){console.error('spReq error',r.status,method,url);}
@@ -661,7 +670,7 @@ async function pushPlaylists(playlists, srcToken, dstToken) {
     const pl = own[idx];
     const res = await spReq('POST', 'https://api.spotify.com/v1/me/playlists', dstToken, {
       name: pl.name || 'Playlist transferida',
-      description: pl.description || 'Transferida desde cuenta antigua via VHS Streaming Tools',
+      description: pl.description || '',
       public: pl.public ?? false
     });
     let newPl;
@@ -674,18 +683,39 @@ async function pushPlaylists(playlists, srcToken, dstToken) {
     }
     if (newPl && newPl.id) {
       log(`Creando "${esc(pl.name)}" en destino...`,'info');
+
+      // Transfer cover image
+      try {
+        const imgRes = await fetch(`https://api.spotify.com/v1/playlists/${pl.id}/images`, {headers:{Authorization:'Bearer '+srcToken}});
+        if (imgRes.ok) {
+          const imgs = await imgRes.json();
+          if (imgs && imgs[0]?.url) {
+            // Fetch image and convert to base64
+            const imgData = await fetch(imgs[0].url);
+            const blob = await imgData.blob();
+            const base64 = await new Promise(resolve => {
+              const reader = new FileReader();
+              reader.onloadend = () => resolve(reader.result.split(',')[1]);
+              reader.readAsDataURL(blob);
+            });
+            await spReq('PUT', `https://api.spotify.com/v1/playlists/${newPl.id}/images`, dstToken, null, base64, 'image/jpeg');
+          }
+        }
+      } catch(e) { console.warn('Cover image transfer skipped:', e.message); }
+
+      // Transfer tracks
       const plTracks = await spAll(`https://api.spotify.com/v1/playlists/${pl.id}/tracks?limit=100`, srcToken);
       let addedCount = 0;
       for (let i = 0; i < plTracks.length; i += 100) {
         const uris = plTracks.slice(i, i + 100).map(t => t.track?.uri).filter(Boolean);
         if (uris.length) {
           const addRes = await spReq('POST', `https://api.spotify.com/v1/playlists/${newPl.id}/tracks`, dstToken, { uris });
-          console.log('Aniadiendo tracks a playlist status:', addRes.status);
+          console.log('Tracks a playlist status:', addRes.status);
           if (addRes.ok) addedCount += uris.length;
           await sleep(600);
         }
       }
-      log(`✓ "${esc(pl.name)}" creada con ${addedCount}/${plTracks.length} tracks`,'success');
+      log(`✓ "${esc(pl.name)}" — ${addedCount}/${plTracks.length} tracks`,'success');
     } else {
       log(`⚠ Fallo creacion de "${esc(pl.name)}" - status: ${res.status}`,'error');
     }

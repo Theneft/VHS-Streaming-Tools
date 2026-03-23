@@ -205,7 +205,7 @@
       <h1><span class="grad">VHS Streaming</span> <span class="plain">– Spotify Tools</span></h1>
       <p>MUSIC ACCOUNT MANAGER</p>
     </div>
-    <span class="version-tag">v3.7</span>
+    <span class="version-tag">v3.8</span>
   </header>
 
   <div class="hero">
@@ -752,7 +752,9 @@ async function pushPlaylists(playlists, srcToken, dstToken) {
       // Tracks - fetch using source token with explicit error handling
       let plTracks = [];
       try {
-        const firstPage = await spGet(`https://api.spotify.com/v1/playlists/${pl.id}/tracks?limit=100`, srcToken);
+        console.log('Fetching tracks for playlist:', pl.id, 'using /items endpoint');
+        const firstPage = await spGet(`https://api.spotify.com/v1/playlists/${pl.id}/items?limit=100`, srcToken);
+        console.log('firstPage result:', firstPage ? `${firstPage.items?.length} items, next: ${!!firstPage.next}` : 'NULL/403');
         if (firstPage) {
           plTracks = firstPage.items || [];
           let nextUrl = firstPage.next;
@@ -767,7 +769,9 @@ async function pushPlaylists(playlists, srcToken, dstToken) {
 
       let addedCount = 0;
       for (let i = 0; i < plTracks.length; i += 100) {
-        const uris = plTracks.slice(i, i + 100).map(t => t.track?.uri).filter(Boolean);
+        const uris = plTracks.slice(i, i + 100)
+          .map(t => t.track?.uri || t.episode?.uri)
+          .filter(Boolean);
         if (uris.length) {
           const addRes = await spReq('POST', `https://api.spotify.com/v1/playlists/${newPl.id}/tracks`, dstToken, { uris });
           if (addRes.ok) addedCount += uris.length;

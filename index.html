@@ -7,247 +7,167 @@
 <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
   :root {
-    --pink:    #1DB954;
-    --purple:  #1DB954;
-    --cyan:    #1DB954;
-    --bg:      #0a0a0a;
-    --surface: #111111;
-    --surface2:#1a1a1a;
-    --border:  #2a2a2a;
-    --text:    #f0f0f0;
-    --muted:   #666666;
-    --red:     #e53e3e;
+    --green:#1DB954; --green-dim:#17a844;
+    --bg:#0a0a0a; --surface:#111111; --surface2:#1a1a1a;
+    --border:#2a2a2a; --text:#f0f0f0; --muted:#666666; --red:#e53e3e;
   }
-  * { margin:0; padding:0; box-sizing:border-box; }
-  body {
-    background:var(--bg); color:var(--text);
-    font-family:'DM Mono',monospace;
-    min-height:100vh; overflow-x:hidden;
-  }
-  body::before {
-    content:''; position:fixed; inset:0;
-    background-image:
-      linear-gradient(rgba(29,185,84,0.04) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(29,185,84,0.04) 1px, transparent 1px);
-    background-size:44px 44px;
-    pointer-events:none; z-index:0;
-  }
-  .orb1 {
-    position:fixed; width:700px; height:700px;
-    background:radial-gradient(circle,rgba(29,185,84,0.06) 0%,transparent 65%);
-    border-radius:50%; top:-250px; right:-200px;
-    pointer-events:none; z-index:0;
-    animation:orbA 10s ease-in-out infinite;
-  }
-  .orb2 {
-    position:fixed; width:500px; height:500px;
-    background:radial-gradient(circle,rgba(29,185,84,0.04) 0%,transparent 65%);
-    border-radius:50%; bottom:-150px; left:-150px;
-    pointer-events:none; z-index:0;
-    animation:orbB 13s ease-in-out infinite;
-  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{background:var(--bg);color:var(--text);font-family:'DM Mono',monospace;min-height:100vh;overflow-x:hidden;}
+  body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(29,185,84,0.04) 1px,transparent 1px),linear-gradient(90deg,rgba(29,185,84,0.04) 1px,transparent 1px);background-size:44px 44px;pointer-events:none;z-index:0;}
+  .orb1{position:fixed;width:700px;height:700px;background:radial-gradient(circle,rgba(29,185,84,0.06) 0%,transparent 65%);border-radius:50%;top:-250px;right:-200px;pointer-events:none;z-index:0;animation:orbA 10s ease-in-out infinite;}
+  .orb2{position:fixed;width:500px;height:500px;background:radial-gradient(circle,rgba(29,185,84,0.04) 0%,transparent 65%);border-radius:50%;bottom:-150px;left:-150px;pointer-events:none;z-index:0;animation:orbB 13s ease-in-out infinite;}
   @keyframes orbA{0%,100%{transform:translate(0,0);}50%{transform:translate(-40px,40px);}}
   @keyframes orbB{0%,100%{transform:translate(0,0);}50%{transform:translate(30px,-30px);}}
-
-  .container {
-    position:relative; z-index:1;
-    max-width:880px; margin:0 auto;
-    padding:56px 24px 80px;
-  }
+  .container{position:relative;z-index:1;max-width:920px;margin:0 auto;padding:56px 24px 80px;}
 
   /* HEADER */
-  header { display:flex; align-items:center; gap:18px; margin-bottom:60px; }
-
-  .logo-wrap { position:relative; flex-shrink:0; width:58px; height:58px; }
-
-  .logo-ring {
-    position:absolute; inset:0; border-radius:50%;
-    border:2px solid transparent;
-    background:linear-gradient(var(--bg),var(--bg)) padding-box,
-               linear-gradient(135deg,#1DB954,#17a844,#1DB954) border-box;
-    animation:spinRing 4s linear infinite;
-  }
+  header{display:flex;align-items:center;gap:18px;margin-bottom:60px;}
+  .logo-wrap{position:relative;flex-shrink:0;width:58px;height:58px;}
+  .logo-ring{position:absolute;inset:0;border-radius:50%;border:2px solid transparent;background:linear-gradient(var(--bg),var(--bg)) padding-box,linear-gradient(135deg,#1DB954,#17a844,#1DB954) border-box;animation:spinRing 4s linear infinite;}
   @keyframes spinRing{to{transform:rotate(360deg);}}
-
-  .logo-inner {
-    position:absolute; inset:5px; border-radius:50%;
-    background:linear-gradient(135deg,#111111,#0a0a0a);
-    display:flex; align-items:center; justify-content:center;
-  }
-  .logo-inner svg { width:28px; height:28px; }
-
-  .header-text { flex:1; }
-  .header-text h1 {
-    font-family:Arial,sans-serif;
-    font-size:1.05rem; font-weight:700;
-    letter-spacing:0.02em; line-height:1.2;
-  }
-  .header-text h1 .grad {
-    background:linear-gradient(90deg,#1DB954,#17a844);
-    -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
-  }
-  .header-text p { font-size:0.62rem; color:var(--muted); margin-top:2px; letter-spacing:0.1em; }
-
-  .version-tag {
-    font-size:0.63rem; color:#1DB954;
-    background:rgba(29,185,84,0.08); border:1px solid rgba(29,185,84,0.2);
-    padding:3px 10px; border-radius:20px; letter-spacing:0.06em;
-    text-shadow:0 0 8px rgba(29,185,84,0.4);
-  }
+  .logo-inner{position:absolute;inset:5px;border-radius:50%;background:linear-gradient(135deg,#111,#0a0a0a);display:flex;align-items:center;justify-content:center;}
+  .logo-inner svg{width:28px;height:28px;}
+  .header-text{flex:1;}
+  .header-text h1{font-family:Arial,sans-serif;font-size:1.05rem;font-weight:700;letter-spacing:0.02em;line-height:1.2;}
+  .header-text h1 .grad{background:linear-gradient(90deg,#1DB954,#17a844);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+  .header-text p{font-size:0.62rem;color:var(--muted);margin-top:2px;letter-spacing:0.1em;}
+  .version-tag{font-size:0.63rem;color:#1DB954;background:rgba(29,185,84,0.08);border:1px solid rgba(29,185,84,0.2);padding:3px 10px;border-radius:20px;letter-spacing:0.06em;text-shadow:0 0 8px rgba(29,185,84,0.4);}
 
   /* HERO */
-  .hero { margin-bottom:52px; }
-  .hero h2 {
-    font-family:Arial,sans-serif;
-    font-size:clamp(2.2rem,6vw,3.6rem); font-weight:900;
-    line-height:1.06; margin-bottom:14px;
-  }
-  .hero h2 em {
-    font-style:normal;
-    background:linear-gradient(90deg,#1DB954 0%,#17a844 60%,#1DB954 100%);
-    -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
-  }
-  .hero p {
-    font-family:Arial,sans-serif;
-    color:var(--muted); font-size:0.9rem; line-height:1.7; max-width:460px;
-  }
+  .hero{margin-bottom:52px;}
+  .hero h2{font-family:Arial,sans-serif;font-size:clamp(2.2rem,6vw,3.6rem);font-weight:900;line-height:1.06;margin-bottom:14px;}
+  .hero h2 em{font-style:normal;background:linear-gradient(90deg,#1DB954 0%,#17a844 60%,#1DB954 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+  .hero p{font-family:Arial,sans-serif;color:var(--muted);font-size:0.9rem;line-height:1.7;max-width:460px;}
 
   /* AUTH */
-  .auth-section {
-    background:var(--surface); border:1px solid var(--border);
-    border-radius:16px; padding:26px 28px; margin-bottom:36px;
-    display:flex; align-items:center; justify-content:space-between;
-    gap:20px; flex-wrap:wrap; transition:border-color 0.3s;
-  }
-  .auth-section.connected { border-color:rgba(29,185,84,0.4); background:rgba(29,185,84,0.04); }
-  .auth-info h3 { font-size:0.9rem; font-weight:700; margin-bottom:4px; }
-  .auth-info p  { font-size:0.72rem; color:var(--muted); }
-  .status-dot {
-    display:inline-block; width:8px; height:8px; border-radius:50%;
-    background:var(--muted); margin-right:7px; vertical-align:middle;
-  }
-  .status-dot.active { background:#1DB954; box-shadow:0 0 10px #1DB954; animation:pulse 2s infinite; }
+  .auth-section{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:20px 24px;margin-bottom:36px;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;transition:border-color 0.3s;}
+  .auth-section.connected{border-color:rgba(29,185,84,0.4);background:rgba(29,185,84,0.04);}
+  .auth-left{display:flex;align-items:center;gap:12px;}
+  .auth-avatar{width:40px;height:40px;border-radius:50%;border:2px solid rgba(29,185,84,0.4);object-fit:cover;display:none;flex-shrink:0;}
+  .auth-avatar.visible{display:block;}
+  .auth-avatar-placeholder{width:40px;height:40px;border-radius:50%;background:var(--surface2);border:2px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0;}
+  .auth-info h3{font-size:0.88rem;font-weight:700;margin-bottom:2px;}
+  .auth-info p{font-size:0.7rem;color:var(--muted);}
+  .status-dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--muted);margin-right:6px;vertical-align:middle;}
+  .status-dot.active{background:#1DB954;box-shadow:0 0 10px #1DB954;animation:pulse 2s infinite;}
   @keyframes pulse{0%,100%{opacity:1;}50%{opacity:0.4;}}
+  .auth-right{display:flex;gap:8px;flex-wrap:wrap;}
 
   /* BUTTONS */
-  .btn {
-    display:inline-flex; align-items:center; gap:8px;
-    padding:11px 22px; border-radius:8px;
-    font-family:'DM Mono',monospace; font-size:0.78rem; font-weight:500;
-    cursor:pointer; border:none; transition:all 0.2s;
-    text-decoration:none; white-space:nowrap;
-  }
-  .btn-purple { background:linear-gradient(135deg,#1DB954,#17a844); color:#000; }
-  .btn-purple:hover { transform:translateY(-2px); box-shadow:0 6px 24px rgba(29,185,84,0.4); }
-  .btn-outline { background:transparent; color:var(--muted); border:1px solid var(--border); }
-  .btn-outline:hover { border-color:#1DB954; color:var(--text); }
-  .btn-red { background:linear-gradient(135deg,#e53e3e,#c53030); color:#fff; }
-  .btn-red:hover { transform:translateY(-2px); box-shadow:0 6px 24px rgba(229,62,62,0.4); }
-  .btn:disabled { opacity:0.35; cursor:not-allowed; transform:none !important; box-shadow:none !important; }
+  .btn{display:inline-flex;align-items:center;gap:7px;padding:9px 18px;border-radius:8px;font-family:'DM Mono',monospace;font-size:0.75rem;font-weight:500;cursor:pointer;border:none;transition:all 0.2s;text-decoration:none;white-space:nowrap;}
+  .btn-green{background:linear-gradient(135deg,#1DB954,#17a844);color:#000;}
+  .btn-green:hover{transform:translateY(-1px);box-shadow:0 4px 20px rgba(29,185,84,0.35);}
+  .btn-outline{background:transparent;color:#ccc;border:1px solid #444;}
+  .btn-outline:hover{border-color:#1DB954;color:var(--text);}
+  .btn-ghost{background:transparent;color:var(--muted);border:1px solid var(--border);font-size:0.7rem;padding:7px 14px;}
+  .btn-ghost:hover{color:#e53e3e;border-color:#e53e3e;}
+  .btn-red{background:linear-gradient(135deg,#e53e3e,#c53030);color:#fff;}
+  .btn-red:hover{transform:translateY(-1px);box-shadow:0 4px 20px rgba(229,62,62,0.35);}
+  .btn-nav{background:var(--surface2);color:var(--text);border:1px solid var(--border);padding:7px 12px;border-radius:6px;}
+  .btn-nav:hover{border-color:#1DB954;color:#1DB954;}
+  .btn-nav:disabled{opacity:0.3;cursor:not-allowed;}
+  .btn:disabled{opacity:0.35;cursor:not-allowed;transform:none!important;box-shadow:none!important;}
 
   /* TOOLS GRID */
-  .tools-grid { display:grid; grid-template-columns:1fr 1fr; gap:20px; margin-bottom:36px; }
-  @media(max-width:600px){.tools-grid{grid-template-columns:1fr;}}
+  .tools-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:36px;}
+  @media(max-width:620px){.tools-grid{grid-template-columns:1fr;}}
+  .tool-card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:26px;transition:all 0.25s;position:relative;overflow:hidden;}
+  .tool-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,#1DB954,#17a844);transform:scaleX(0);transform-origin:left;transition:transform 0.35s;}
+  .tool-card.danger::before{background:linear-gradient(90deg,#e53e3e,#fc8181);}
+  .tool-card:hover::before{transform:scaleX(1);}
+  .tool-card:hover{border-color:#333;transform:translateY(-2px);}
+  .tool-number{font-size:0.62rem;color:var(--muted);letter-spacing:0.12em;margin-bottom:14px;display:block;}
+  .tool-icon{width:44px;height:44px;border-radius:10px;display:flex;align-items:center;justify-content:center;margin-bottom:14px;font-size:1.2rem;}
+  .tool-icon.green{background:rgba(29,185,84,0.12);}
+  .tool-icon.red{background:rgba(229,62,62,0.12);}
+  .tool-card h3{font-size:1rem;font-weight:700;margin-bottom:8px;}
+  .tool-card p{font-size:0.72rem;color:#aaa;line-height:1.6;margin-bottom:18px;}
+  .connect-label{font-size:0.67rem;color:#ccc;letter-spacing:0.08em;display:block;margin-bottom:7px;font-weight:600;}
+  .connected-user{display:none;font-size:0.7rem;color:#1DB954;margin-top:7px;text-shadow:0 0 8px rgba(29,185,84,0.4);}
+  .connected-user.red-user{color:#fc8181;text-shadow:0 0 8px rgba(229,62,62,0.3);}
 
-  .tool-card {
-    background:var(--surface); border:1px solid var(--border);
-    border-radius:16px; padding:28px;
-    transition:all 0.25s; position:relative; overflow:hidden;
-  }
-  .tool-card::before {
-    content:''; position:absolute; top:0; left:0; right:0; height:2px;
-    background:linear-gradient(90deg,#1DB954,#17a844);
-    transform:scaleX(0); transform-origin:left; transition:transform 0.35s;
-  }
-  .tool-card.danger::before { background:linear-gradient(90deg,#e53e3e,#fc8181); }
-  .tool-card:hover::before  { transform:scaleX(1); }
-  .tool-card:hover { border-color:#3a3a3a; transform:translateY(-2px); }
+  /* PROFILE BADGE inside card */
+  .profile-badge{display:none;align-items:center;gap:8px;background:rgba(29,185,84,0.06);border:1px solid rgba(29,185,84,0.2);border-radius:8px;padding:8px 10px;margin-top:8px;}
+  .profile-badge.visible{display:flex;}
+  .profile-badge img{width:28px;height:28px;border-radius:50%;object-fit:cover;border:1px solid rgba(29,185,84,0.4);}
+  .profile-badge .pb-avatar{width:28px;height:28px;border-radius:50%;background:var(--surface2);border:1px solid rgba(29,185,84,0.3);display:flex;align-items:center;justify-content:center;font-size:0.8rem;}
+  .profile-badge span{font-size:0.72rem;color:#1DB954;}
 
-  .tool-number { font-size:0.62rem; color:var(--muted); letter-spacing:0.12em; margin-bottom:14px; display:block; }
-
-  .tool-icon {
-    width:46px; height:46px; border-radius:10px;
-    display:flex; align-items:center; justify-content:center;
-    margin-bottom:14px; font-size:1.3rem;
-  }
-  .tool-icon.purple { background:rgba(29,185,84,0.12); }
-  .tool-icon.red    { background:rgba(229,62,62,0.12);  }
-
-  .tool-card h3 { font-size:1.05rem; font-weight:700; margin-bottom:8px; }
-  .tool-card p  { font-size:0.73rem; color:#aaaaaa; line-height:1.6; margin-bottom:20px; }
-
-  .tool-features { list-style:none; margin-bottom:22px; }
-  .tool-features li {
-    font-size:0.7rem; color:#aaaaaa;
-    padding:3px 0; display:flex; align-items:center; gap:8px;
-  }
-  .tool-features li::before { content:'›'; color:#1DB954; font-size:1rem; line-height:1; }
-  .danger .tool-features li::before { color:#e53e3e; }
-
-  .connect-label { font-size:0.68rem; color:#cccccc; letter-spacing:0.08em; display:block; margin-bottom:8px; font-weight:600; }
-  .connected-user { display:none; font-size:0.72rem; color:#1DB954; margin-top:8px; text-shadow:0 0 8px rgba(29,185,84,0.4); }
-  .connected-user.red-user { color:#fc8181; text-shadow:0 0 8px rgba(229,62,62,0.3); }
+  /* CONTENT BROWSER */
+  .content-browser{display:none;background:var(--surface);border:1px solid var(--border);border-radius:16px;margin-bottom:28px;overflow:hidden;}
+  .content-browser.visible{display:block;}
+  .cb-header{padding:16px 20px 0;border-bottom:1px solid var(--border);}
+  .cb-header-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;}
+  .cb-header-top h4{font-size:0.85rem;font-weight:700;color:var(--text);}
+  .cb-tabs{display:flex;gap:0;overflow-x:auto;scrollbar-width:none;}
+  .cb-tabs::-webkit-scrollbar{display:none;}
+  .cb-tab{padding:10px 16px;font-size:0.7rem;font-weight:600;color:var(--muted);cursor:pointer;white-space:nowrap;border-bottom:2px solid transparent;transition:all 0.2s;background:none;border-top:none;border-left:none;border-right:none;display:flex;align-items:center;gap:6px;}
+  .cb-tab:hover{color:var(--text);}
+  .cb-tab.active{color:#1DB954;border-bottom-color:#1DB954;}
+  .cb-count{background:rgba(29,185,84,0.15);color:#1DB954;font-size:0.58rem;padding:1px 6px;border-radius:10px;}
+  .cb-actions{display:flex;align-items:center;gap:8px;padding:12px 20px;border-bottom:1px solid var(--border);flex-wrap:wrap;}
+  .cb-sel-info{font-size:0.68rem;color:var(--muted);margin-left:auto;}
+  .cb-table-wrap{overflow-x:auto;}
+  .cb-table{width:100%;border-collapse:collapse;font-size:0.72rem;}
+  .cb-table th{padding:10px 14px;text-align:left;font-size:0.63rem;color:var(--muted);letter-spacing:0.08em;font-weight:600;border-bottom:1px solid var(--border);white-space:nowrap;}
+  .cb-table td{padding:10px 14px;border-bottom:1px solid rgba(255,255,255,0.04);vertical-align:middle;}
+  .cb-table tr:last-child td{border-bottom:none;}
+  .cb-table tr:hover td{background:rgba(255,255,255,0.02);}
+  .cb-table input[type=checkbox]{accent-color:#1DB954;cursor:pointer;}
+  .cb-num{color:var(--muted);font-size:0.68rem;}
+  .cb-name{color:var(--text);font-weight:500;max-width:260px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .cb-sub{color:var(--muted);font-size:0.65rem;}
+  .cb-badge{display:inline-block;font-size:0.6rem;padding:2px 6px;border-radius:4px;background:rgba(29,185,84,0.1);color:#1DB954;border:1px solid rgba(29,185,84,0.2);}
+  .cb-badge.no{background:rgba(229,62,62,0.08);color:#fc8181;border-color:rgba(229,62,62,0.2);}
+  .cb-img{width:36px;height:36px;border-radius:4px;object-fit:cover;background:var(--surface2);}
+  .cb-pagination{display:flex;align-items:center;justify-content:space-between;padding:12px 20px;border-top:1px solid var(--border);}
+  .cb-page-info{font-size:0.68rem;color:var(--muted);}
+  .cb-page-btns{display:flex;gap:6px;}
+  .cb-loading{padding:40px;text-align:center;color:var(--muted);font-size:0.75rem;}
 
   /* LOG PANEL */
-  .log-panel { background:var(--surface); border:1px solid var(--border); border-radius:16px; overflow:hidden; display:none; }
-  .log-panel.visible { display:block; }
-  .log-header { display:flex; align-items:center; justify-content:space-between; padding:14px 22px; border-bottom:1px solid var(--border); }
-  .log-header h4 { font-size:0.82rem; font-weight:700; }
-  .log-running { display:inline-flex; align-items:center; gap:6px; font-size:0.68rem; color:var(--cyan); }
-  .spinner { width:10px; height:10px; border:2px solid rgba(29,185,84,0.25); border-top-color:#1DB954; border-radius:50%; animation:spin 0.8s linear infinite; }
-  .log-running { display:inline-flex; align-items:center; gap:6px; font-size:0.68rem; color:#1DB954; }
-  .log-body { padding:18px 22px; max-height:280px; overflow-y:auto; font-size:0.7rem; line-height:1.9; }
+  .log-panel{background:var(--surface);border:1px solid var(--border);border-radius:16px;overflow:hidden;display:none;}
+  .log-panel.visible{display:block;}
+  .log-header{display:flex;align-items:center;justify-content:space-between;padding:14px 22px;border-bottom:1px solid var(--border);}
+  .log-header h4{font-size:0.82rem;font-weight:700;}
+  .log-running{display:inline-flex;align-items:center;gap:6px;font-size:0.68rem;color:#1DB954;}
+  .spinner{width:10px;height:10px;border:2px solid rgba(29,185,84,0.25);border-top-color:#1DB954;border-radius:50%;animation:spin 0.8s linear infinite;}
+  @keyframes spin{to{transform:rotate(360deg);}}
+  .log-body{padding:18px 22px;max-height:280px;overflow-y:auto;font-size:0.7rem;line-height:1.9;}
   .log-body::-webkit-scrollbar{width:3px;}
   .log-body::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px;}
-  .log-line { display:flex; gap:12px; align-items:flex-start; }
-  .log-time  { color:var(--muted); flex-shrink:0; }
-  .log-msg.success { color:#1DB954; }
-  .log-msg.error   { color:#e53e3e; }
-  .log-msg.info    { color:#666666; }
-
-  /* PROGRESS */
-  .progress-wrap { padding:0 22px 18px; }
-  .progress-bar-bg { height:3px; background:var(--border); border-radius:2px; overflow:hidden; }
-  .progress-bar-fill { height:100%; background:linear-gradient(90deg,#1DB954,#17a844); border-radius:2px; transition:width 0.4s ease; width:0%; }
-  .progress-bar-fill.red { background:linear-gradient(90deg,#e53e3e,#fc8181); }
-  .progress-text { font-size:0.63rem; color:var(--muted); margin-top:5px; }
+  .log-line{display:flex;gap:12px;align-items:flex-start;}
+  .log-time{color:var(--muted);flex-shrink:0;}
+  .log-msg.success{color:#1DB954;} .log-msg.error{color:#e53e3e;} .log-msg.info{color:#666;}
+  .progress-wrap{padding:0 22px 18px;}
+  .progress-bar-bg{height:3px;background:var(--border);border-radius:2px;overflow:hidden;}
+  .progress-bar-fill{height:100%;background:linear-gradient(90deg,#1DB954,#17a844);border-radius:2px;transition:width 0.4s ease;width:0%;}
+  .progress-bar-fill.red{background:linear-gradient(90deg,#e53e3e,#fc8181);}
+  .progress-text{font-size:0.63rem;color:var(--muted);margin-top:5px;}
 
   /* MODAL */
-  .modal-overlay {
-    position:fixed; inset:0; background:rgba(0,0,0,0.88);
-    backdrop-filter:blur(6px); z-index:100;
-    display:none; align-items:center; justify-content:center; padding:24px;
-  }
-  .modal-overlay.open { display:flex; }
-  .modal {
-    background:var(--surface); border:1px solid var(--border);
-    border-radius:20px; padding:36px; max-width:420px; width:100%;
-    animation:modalIn 0.22s ease;
-  }
+  .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.88);backdrop-filter:blur(6px);z-index:100;display:none;align-items:center;justify-content:center;padding:24px;}
+  .modal-overlay.open{display:flex;}
+  .modal{background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:36px;max-width:420px;width:100%;animation:modalIn 0.22s ease;}
   @keyframes modalIn{from{opacity:0;transform:scale(0.94) translateY(12px);}to{opacity:1;transform:scale(1) translateY(0);}}
-  .modal-icon { width:52px; height:52px; background:rgba(255,45,85,0.12); border-radius:12px; display:flex; align-items:center; justify-content:center; font-size:1.5rem; margin-bottom:18px; }
-  .modal h3   { font-size:1.1rem; font-weight:800; margin-bottom:10px; }
-  .modal p    { font-size:0.76rem; color:var(--muted); line-height:1.7; margin-bottom:22px; }
-  .modal-warning { background:rgba(229,62,62,0.07); border:1px solid rgba(229,62,62,0.22); border-radius:8px; padding:12px 14px; font-size:0.7rem; color:#fc8181; margin-bottom:24px; line-height:1.6; }
-  .modal-actions { display:flex; gap:10px; }
-  .modal-actions .btn { flex:1; justify-content:center; }
+  .modal-icon{width:52px;height:52px;background:rgba(255,45,85,0.12);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.5rem;margin-bottom:18px;}
+  .modal h3{font-size:1.1rem;font-weight:800;margin-bottom:10px;}
+  .modal p{font-size:0.76rem;color:var(--muted);line-height:1.7;margin-bottom:22px;}
+  .modal-warning{background:rgba(229,62,62,0.07);border:1px solid rgba(229,62,62,0.22);border-radius:8px;padding:12px 14px;font-size:0.7rem;color:#fc8181;margin-bottom:24px;line-height:1.6;}
+  .modal-actions{display:flex;gap:10px;}
+  .modal-actions .btn{flex:1;justify-content:center;}
 
   /* CREDITS */
-  .credits { margin-top:60px; padding-top:28px; border-top:1px solid var(--border); text-align:center; }
-  .credits-icon { font-size:1.4rem; display:block; margin-bottom:10px; animation:floatIcon 3s ease-in-out infinite; }
+  .credits{margin-top:60px;padding-top:28px;border-top:1px solid var(--border);text-align:center;}
+  .credits-icon{font-size:1.4rem;display:block;margin-bottom:10px;animation:floatIcon 3s ease-in-out infinite;}
   @keyframes floatIcon{0%,100%{transform:translateY(0);}50%{transform:translateY(-5px);}}
-  .credits p { font-size:0.7rem; color:var(--muted); letter-spacing:0.06em; line-height:2.2; }
-  .credits .brand {
-    background:linear-gradient(90deg,#1DB954,#17a844);
-    -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
-    font-weight:700;
-  }
+  .credits p{font-size:0.7rem;color:var(--muted);letter-spacing:0.06em;line-height:2.2;}
+  .credits .brand{background:linear-gradient(90deg,#1DB954,#17a844);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;font-weight:700;}
 </style>
 </head>
 <body>
 <div class="orb1"></div>
 <div class="orb2"></div>
-
 <div class="container">
 
   <!-- HEADER -->
@@ -256,7 +176,7 @@
       <div class="logo-ring"></div>
       <div class="logo-inner">
         <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <rect x="2" y="7" width="28" height="18" rx="3" fill="#111111" stroke="#1DB954" stroke-width="1.2"/>
+          <rect x="2" y="7" width="28" height="18" rx="3" fill="#111" stroke="#1DB954" stroke-width="1.2"/>
           <rect x="5" y="10" width="22" height="9" rx="1.5" fill="#0a0a0a"/>
           <circle cx="11" cy="21" r="3" fill="#0a0a0a" stroke="#1DB954" stroke-width="1"/>
           <circle cx="21" cy="21" r="3" fill="#0a0a0a" stroke="#1DB954" stroke-width="1"/>
@@ -272,7 +192,7 @@
       <h1><span class="grad">VHS Streaming</span> – Spotify Tools</h1>
       <p>MUSIC ACCOUNT MANAGER</p>
     </div>
-    <span class="version-tag">v1.9</span>
+    <span class="version-tag">v2.0</span>
   </header>
 
   <!-- HERO -->
@@ -281,91 +201,117 @@
     <p>Transferí canciones entre cuentas o limpiá una biblioteca completa con un solo clic. Sin tokens manuales.</p>
   </div>
 
-  <!-- AUTH -->
+  <!-- AUTH STATUS BAR -->
   <div class="auth-section" id="authSection">
-    <div class="auth-info">
-      <h3><span class="status-dot" id="statusDot"></span><span id="statusText">Sin conectar</span></h3>
-      <p id="authSubtext">Conectá una cuenta usando los botones de abajo para comenzar</p>
+    <div class="auth-left">
+      <div class="auth-avatar-placeholder" id="authAvatarPlaceholder">🎵</div>
+      <img class="auth-avatar" id="authAvatar" src="" alt="">
+      <div class="auth-info">
+        <h3><span class="status-dot" id="statusDot"></span><span id="statusText">Sin conectar</span></h3>
+        <p id="authSubtext">Conectá una cuenta usando los botones de abajo para comenzar</p>
+      </div>
+    </div>
+    <div class="auth-right">
+      <button class="btn btn-ghost" onclick="disconnectAll()" id="disconnectBtn" style="display:none;">✕ Desconectar todo</button>
     </div>
   </div>
 
-  <!-- TOOLS -->
+  <!-- TOOLS GRID -->
   <div class="tools-grid">
 
+    <!-- TRANSFER CARD -->
     <div class="tool-card">
       <span class="tool-number">01 /</span>
-      <div class="tool-icon purple">🔄</div>
+      <div class="tool-icon green">🔄</div>
       <h3>Transferir canciones</h3>
-      <p>Conectá ambas cuentas, revisá el contenido y transferí lo que querás.</p>
+      <p>Conectá la cuenta vieja para ver su contenido, luego conectá la nueva y transferí.</p>
 
       <div style="margin-bottom:14px;">
         <span class="connect-label">CUENTA ORIGEN (cuenta vieja)</span>
-        <button class="btn btn-outline" onclick="connectSource()" id="sourceBtn" style="width:100%;justify-content:center;font-size:0.73rem;color:#f0f0f0;border-color:#555;">Conectar cuenta origen</button>
-        <div class="connected-user" id="sourceUser">✦ <span id="sourceUserName"></span></div>
-      </div>
-
-      <!-- Content preview after source connects -->
-      <div id="contentPreview" style="display:none;margin-bottom:16px;">
-        <div style="background:#0a0a0a;border:1px solid #2a2a2a;border-radius:10px;padding:14px;margin-bottom:12px;">
-          <div style="font-size:0.68rem;color:#ccc;margin-bottom:10px;letter-spacing:0.08em;font-weight:600;">CONTENIDO ENCONTRADO</div>
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
-            <div class="content-item" id="ci-tracks">
-              <input type="checkbox" id="cb-tracks" checked style="accent-color:#1DB954;">
-              <label for="cb-tracks" style="font-size:0.72rem;color:#f0f0f0;cursor:pointer;margin-left:4px;">🎵 Canciones (<span id="cnt-tracks">0</span>)</label>
-            </div>
-            <div class="content-item" id="ci-albums">
-              <input type="checkbox" id="cb-albums" checked style="accent-color:#1DB954;">
-              <label for="cb-albums" style="font-size:0.72rem;color:#f0f0f0;cursor:pointer;margin-left:4px;">💿 Álbumes (<span id="cnt-albums">0</span>)</label>
-            </div>
-            <div class="content-item" id="ci-artists">
-              <input type="checkbox" id="cb-artists" checked style="accent-color:#1DB954;">
-              <label for="cb-artists" style="font-size:0.72rem;color:#f0f0f0;cursor:pointer;margin-left:4px;">🎤 Artistas (<span id="cnt-artists">0</span>)</label>
-            </div>
-            <div class="content-item" id="ci-playlists">
-              <input type="checkbox" id="cb-playlists" checked style="accent-color:#1DB954;">
-              <label for="cb-playlists" style="font-size:0.72rem;color:#f0f0f0;cursor:pointer;margin-left:4px;">📂 Playlists (<span id="cnt-playlists">0</span>)</label>
-            </div>
-            <div class="content-item" id="ci-episodes">
-              <input type="checkbox" id="cb-episodes" checked style="accent-color:#1DB954;">
-              <label for="cb-episodes" style="font-size:0.72rem;color:#f0f0f0;cursor:pointer;margin-left:4px;">🎙 Podcasts (<span id="cnt-episodes">0</span>)</label>
-            </div>
-          </div>
-          <div id="loadingContent" style="font-size:0.7rem;color:#666;margin-top:8px;display:none;">Cargando contenido...</div>
-        </div>
-
-        <div style="margin-bottom:12px;">
-          <span class="connect-label">CUENTA DESTINO (cuenta nueva)</span>
-          <button class="btn btn-outline" onclick="connectDest()" id="destBtn" style="width:100%;justify-content:center;font-size:0.73rem;color:#f0f0f0;border-color:#555;">Conectar cuenta destino</button>
-          <div class="connected-user" id="destUser">✦ <span id="destUserName"></span></div>
+        <button class="btn btn-outline" onclick="connectSource()" id="sourceBtn" style="width:100%;justify-content:center;">Conectar cuenta origen</button>
+        <div class="profile-badge" id="sourceBadge">
+          <div class="pb-avatar" id="sourceAvatarPlaceholder">🎵</div>
+          <img id="sourceAvatarImg" src="" alt="" style="display:none;width:28px;height:28px;border-radius:50%;object-fit:cover;border:1px solid rgba(29,185,84,0.4);">
+          <span id="sourceUserName"></span>
         </div>
       </div>
 
-      <button class="btn btn-purple" onclick="startTransfer()" id="transferBtn" style="width:100%;justify-content:center;" disabled>Iniciar transferencia →</button>
+      <div style="margin-bottom:18px;">
+        <span class="connect-label">CUENTA DESTINO (cuenta nueva)</span>
+        <button class="btn btn-outline" onclick="connectDest()" id="destBtn" style="width:100%;justify-content:center;">Conectar cuenta destino</button>
+        <div class="profile-badge" id="destBadge">
+          <div class="pb-avatar" id="destAvatarPlaceholder">🎵</div>
+          <img id="destAvatarImg" src="" alt="" style="display:none;width:28px;height:28px;border-radius:50%;object-fit:cover;border:1px solid rgba(29,185,84,0.4);">
+          <span id="destUserName"></span>
+        </div>
+      </div>
+
+      <button class="btn btn-green" onclick="startTransfer()" id="transferBtn" style="width:100%;justify-content:center;" disabled>Iniciar transferencia →</button>
     </div>
 
+    <!-- DELETE CARD -->
     <div class="tool-card danger">
       <span class="tool-number">02 /</span>
       <div class="tool-icon red">🗑️</div>
       <h3>Eliminar datos</h3>
       <p>Limpiá completamente una cuenta de Spotify. Elimina todo el contenido guardado.</p>
-      <ul class="tool-features">
-        <li>Canciones favoritas</li>
-        <li>Álbumes guardados</li>
-        <li>Artistas seguidos</li>
-        <li>Playlists</li>
-        <li>Episodios de podcast</li>
+      <ul style="list-style:none;margin-bottom:20px;">
+        <li style="font-size:0.7rem;color:#aaa;padding:3px 0;display:flex;align-items:center;gap:8px;"><span style="color:#e53e3e;">›</span>Canciones favoritas</li>
+        <li style="font-size:0.7rem;color:#aaa;padding:3px 0;display:flex;align-items:center;gap:8px;"><span style="color:#e53e3e;">›</span>Álbumes guardados</li>
+        <li style="font-size:0.7rem;color:#aaa;padding:3px 0;display:flex;align-items:center;gap:8px;"><span style="color:#e53e3e;">›</span>Artistas seguidos</li>
+        <li style="font-size:0.7rem;color:#aaa;padding:3px 0;display:flex;align-items:center;gap:8px;"><span style="color:#e53e3e;">›</span>Playlists</li>
+        <li style="font-size:0.7rem;color:#aaa;padding:3px 0;display:flex;align-items:center;gap:8px;"><span style="color:#e53e3e;">›</span>Episodios de podcast</li>
       </ul>
-      <div style="margin-bottom:20px;">
+      <div style="margin-bottom:18px;">
         <span class="connect-label">CUENTA A LIMPIAR</span>
-        <button class="btn btn-outline" onclick="connectDelete()" id="deleteAccBtn" style="width:100%;justify-content:center;font-size:0.73rem;color:#f0f0f0;border-color:#555;">Conectar cuenta</button>
-        <div class="connected-user red-user" id="deleteUser">⚠ <span id="deleteUserName"></span></div>
+        <button class="btn btn-outline" onclick="connectDelete()" id="deleteAccBtn" style="width:100%;justify-content:center;">Conectar cuenta</button>
+        <div class="profile-badge" id="deleteBadge" style="border-color:rgba(229,62,62,0.2);background:rgba(229,62,62,0.05);">
+          <div class="pb-avatar" id="deleteAvatarPlaceholder" style="border-color:rgba(229,62,62,0.3);">🎵</div>
+          <img id="deleteAvatarImg" src="" alt="" style="display:none;width:28px;height:28px;border-radius:50%;object-fit:cover;border:1px solid rgba(229,62,62,0.4);">
+          <span id="deleteUserName" style="color:#fc8181;"></span>
+        </div>
       </div>
       <button class="btn btn-red" onclick="showDeleteModal()" id="deleteBtn" style="width:100%;justify-content:center;" disabled>Eliminar todo →</button>
     </div>
 
   </div>
 
-  <!-- LOG -->
+  <!-- CONTENT BROWSER -->
+  <div class="content-browser" id="contentBrowser">
+    <div class="cb-header">
+      <div class="cb-header-top">
+        <h4>📂 Contenido de la cuenta origen</h4>
+      </div>
+      <div class="cb-tabs" id="cbTabs">
+        <button class="cb-tab active" onclick="switchTab('playlists')" id="tab-playlists">📂 Playlists <span class="cb-count" id="tc-playlists">0</span></button>
+        <button class="cb-tab" onclick="switchTab('tracks')" id="tab-tracks">🎵 Tracks <span class="cb-count" id="tc-tracks">0</span></button>
+        <button class="cb-tab" onclick="switchTab('albums')" id="tab-albums">💿 Albums <span class="cb-count" id="tc-albums">0</span></button>
+        <button class="cb-tab" onclick="switchTab('artists')" id="tab-artists">🎤 Artists <span class="cb-count" id="tc-artists">0</span></button>
+        <button class="cb-tab" onclick="switchTab('episodes')" id="tab-episodes">🎙 Podcasts <span class="cb-count" id="tc-episodes">0</span></button>
+      </div>
+    </div>
+    <div class="cb-actions">
+      <button class="btn btn-green" onclick="transferSelected()" id="transferSelectedBtn" style="font-size:0.7rem;padding:7px 14px;" disabled>↗ Transferir seleccionados</button>
+      <button class="btn btn-outline" onclick="transferAll()" id="transferAllBtn" style="font-size:0.7rem;padding:7px 14px;" disabled>↗ Transferir todos</button>
+      <span class="cb-sel-info" id="selInfo">Seleccionados: 0</span>
+    </div>
+    <div class="cb-table-wrap">
+      <div class="cb-loading" id="cbLoading">Cargando contenido...</div>
+      <table class="cb-table" id="cbTable" style="display:none;">
+        <thead id="cbThead"></thead>
+        <tbody id="cbTbody"></tbody>
+      </table>
+    </div>
+    <div class="cb-pagination" id="cbPagination" style="display:none;">
+      <span class="cb-page-info" id="cbPageInfo"></span>
+      <div class="cb-page-btns">
+        <button class="btn btn-nav" onclick="changePage(-1)" id="btnPrev">←</button>
+        <button class="btn btn-nav" onclick="changePage(1)" id="btnNext">→</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- LOG PANEL -->
   <div class="log-panel" id="logPanel">
     <div class="log-header">
       <h4 id="logTitle">📋 Log de operación</h4>
@@ -381,15 +327,13 @@
   <!-- CREDITS -->
   <div class="credits">
     <span class="credits-icon">📼</span>
-    <p>
-      Made by <span class="brand">Neft</span>, VHS Streaming.<br>
-      <span style="font-size:0.6rem;opacity:0.45;">© 2026 · Todos los derechos reservados</span>
-    </p>
+    <p>Made by <span class="brand">Neft</span>, VHS Streaming.<br>
+    <span style="font-size:0.6rem;opacity:0.45;">© 2026 · Todos los derechos reservados</span></p>
   </div>
 
 </div>
 
-<!-- MODAL -->
+<!-- DELETE MODAL -->
 <div class="modal-overlay" id="deleteModal">
   <div class="modal">
     <div class="modal-icon">⚠️</div>
@@ -404,208 +348,407 @@
 </div>
 
 <script>
+// ─── CONFIG ───────────────────────────────────────
 const CLIENT_ID    = '7d67e91f4b3e43a9989cf9da41af18a8';
 const REDIRECT_URI = 'https://theneft.github.io/VHS-Streaming-Tools';
-const SCOPES = [
-  'user-library-read','user-library-modify',
-  'playlist-read-private','playlist-read-collaborative',
-  'playlist-modify-public','playlist-modify-private',
-  'user-follow-read','user-follow-modify'
-].join(' ');
+const SCOPES = ['user-library-read','user-library-modify','playlist-read-private','playlist-read-collaborative','playlist-modify-public','playlist-modify-private','user-follow-read','user-follow-modify'].join(' ');
+const PAGE_SIZE = 10;
 
+// ─── STATE ────────────────────────────────────────
 let tokens = {
-  source: localStorage.getItem('token_source') || null,
-  dest:   localStorage.getItem('token_dest')   || null,
-  delete: localStorage.getItem('token_delete') || null
+  source: localStorage.getItem('tok_source')||null,
+  dest:   localStorage.getItem('tok_dest')||null,
+  delete: localStorage.getItem('tok_delete')||null
 };
 let users = {
-  source: JSON.parse(localStorage.getItem('user_source') || 'null'),
-  dest:   JSON.parse(localStorage.getItem('user_dest')   || 'null'),
-  delete: JSON.parse(localStorage.getItem('user_delete') || 'null')
+  source: JSON.parse(localStorage.getItem('usr_source')||'null'),
+  dest:   JSON.parse(localStorage.getItem('usr_dest')||'null'),
+  delete: JSON.parse(localStorage.getItem('usr_delete')||'null')
 };
-let sourceContent = { tracks:[], albums:[], artists:[], playlists:[], episodes:[] };
+let sourceContent = {tracks:[],albums:[],artists:[],playlists:[],episodes:[]};
+let currentTab = 'playlists';
+let currentPage = 0;
+let selectedItems = new Set();
 
-window.onload = () => {
-  handleCallback();
-  restoreUI();
-};
+// ─── INIT ─────────────────────────────────────────
+window.onload = () => { handleCallback(); restoreUI(); };
 
-async function generateCodeVerifier() {
-  const arr = new Uint8Array(64); crypto.getRandomValues(arr);
-  return btoa(String.fromCharCode(...arr)).replace(/\+/g,'-').replace(/\//g,'_').replace(/=/g,'');
+// ─── PKCE OAuth ───────────────────────────────────
+async function genVerifier() {
+  const a=new Uint8Array(64); crypto.getRandomValues(a);
+  return btoa(String.fromCharCode(...a)).replace(/\+/g,'-').replace(/\//g,'_').replace(/=/g,'');
 }
-async function generateCodeChallenge(v) {
-  const data = new TextEncoder().encode(v);
-  const digest = await crypto.subtle.digest('SHA-256',data);
-  return btoa(String.fromCharCode(...new Uint8Array(digest))).replace(/\+/g,'-').replace(/\//g,'_').replace(/=/g,'');
+async function genChallenge(v) {
+  const d=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(v));
+  return btoa(String.fromCharCode(...new Uint8Array(d))).replace(/\+/g,'-').replace(/\//g,'_').replace(/=/g,'');
 }
 
 async function startOAuth(role) {
-  const verifier  = await generateCodeVerifier();
-  const challenge = await generateCodeChallenge(verifier);
-  localStorage.setItem('pkce_verifier', verifier);
-  localStorage.setItem('oauth_role', role);
-  const p = new URLSearchParams({
-    response_type:'code', client_id:CLIENT_ID, scope:SCOPES,
-    redirect_uri:REDIRECT_URI, code_challenge_method:'S256',
-    code_challenge:challenge, state:role
-  });
-  window.location = 'https://accounts.spotify.com/authorize?'+p;
+  const ver=await genVerifier(), ch=await genChallenge(ver);
+  localStorage.setItem('pkce_v',ver); localStorage.setItem('pkce_r',role);
+  const p=new URLSearchParams({response_type:'code',client_id:CLIENT_ID,scope:SCOPES,redirect_uri:REDIRECT_URI,code_challenge_method:'S256',code_challenge:ch,state:role});
+  window.location='https://accounts.spotify.com/authorize?'+p;
 }
 
 async function handleCallback() {
-  const params = new URLSearchParams(window.location.search);
-  const code = params.get('code');
-  if (!code) return;
+  const p=new URLSearchParams(window.location.search);
+  const code=p.get('code'); if(!code)return;
   window.history.replaceState({},'',window.location.pathname);
-  const verifier = localStorage.getItem('pkce_verifier');
-  const role     = localStorage.getItem('oauth_role');
-  console.log('🔑 code:', code);
-  console.log('🔑 verifier:', verifier);
-  console.log('🔑 role:', role);
-  if (!verifier) { console.error('❌ No verifier found'); return; }
-  const res = await fetch('https://accounts.spotify.com/api/token',{
-    method:'POST',
-    headers:{'Content-Type':'application/x-www-form-urlencoded'},
-    body:new URLSearchParams({
-      grant_type:'authorization_code', code,
-      redirect_uri:REDIRECT_URI, client_id:CLIENT_ID,
-      code_verifier:verifier
-    })
-  });
-  const data = await res.json();
-  console.log('🎟 Token response:', data);
-  if (data.access_token) {
-    tokens[role] = data.access_token;
-    localStorage.removeItem('pkce_verifier');
-    localStorage.removeItem('oauth_role');
-    await fetchUserProfile(role);
-  } else {
-    console.error('❌ Token error:', data);
+  const ver=localStorage.getItem('pkce_v'), role=localStorage.getItem('pkce_r');
+  if(!ver)return;
+  const res=await fetch('https://accounts.spotify.com/api/token',{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded'},body:new URLSearchParams({grant_type:'authorization_code',code,redirect_uri:REDIRECT_URI,client_id:CLIENT_ID,code_verifier:ver})});
+  const data=await res.json();
+  if(data.access_token){
+    tokens[role]=data.access_token;
+    localStorage.setItem('tok_'+role,data.access_token);
+    localStorage.removeItem('pkce_v'); localStorage.removeItem('pkce_r');
+    await fetchAndSetProfile(role);
   }
 }
 
-async function fetchUserProfile(role) {
-  const r = await spotifyGet('https://api.spotify.com/v1/me', tokens[role]);
-  if (!r) return;
-  users[role] = r;
-  localStorage.setItem('token_' + role, tokens[role]);
-  localStorage.setItem('user_' + role, JSON.stringify(r));
-  const name = r.display_name || r.id;
+async function fetchAndSetProfile(role) {
+  const r=await spGet('https://api.spotify.com/v1/me',tokens[role]);
+  if(!r)return;
+  users[role]=r;
+  localStorage.setItem('usr_'+role,JSON.stringify(r));
+  applyProfileToUI(role,r);
+  if(role==='source'){ await loadSourceContent(); showContentBrowser(); }
+  checkTransferReady();
+  updateAuthBar();
+}
 
-  if (role==='source') {
-    document.getElementById('sourceUser').style.display='block';
-    document.getElementById('sourceUserName').textContent=name;
+function applyProfileToUI(role, u) {
+  const name=u.display_name||u.id;
+  const img=u.images?.[0]?.url||'';
+  if(role==='source'){
     document.getElementById('sourceBtn').style.display='none';
-    document.getElementById('contentPreview').style.display='block';
-    await loadSourceContent();
-    checkTransferReady();
-  } else if (role==='dest') {
-    document.getElementById('destUser').style.display='block';
-    document.getElementById('destUserName').textContent=name;
+    document.getElementById('sourceBadge').classList.add('visible');
+    document.getElementById('sourceUserName').textContent=name;
+    if(img){document.getElementById('sourceAvatarImg').src=img;document.getElementById('sourceAvatarImg').style.display='block';document.getElementById('sourceAvatarPlaceholder').style.display='none';}
+  } else if(role==='dest'){
     document.getElementById('destBtn').style.display='none';
-    checkTransferReady();
-  } else if (role==='delete') {
-    document.getElementById('deleteUser').style.display='block';
-    document.getElementById('deleteUserName').textContent=name;
+    document.getElementById('destBadge').classList.add('visible');
+    document.getElementById('destUserName').textContent=name;
+    if(img){document.getElementById('destAvatarImg').src=img;document.getElementById('destAvatarImg').style.display='block';document.getElementById('destAvatarPlaceholder').style.display='none';}
+  } else if(role==='delete'){
     document.getElementById('deleteAccBtn').style.display='none';
+    document.getElementById('deleteBadge').classList.add('visible');
+    document.getElementById('deleteUserName').textContent=name;
     document.getElementById('deleteBtn').disabled=false;
+    if(img){document.getElementById('deleteAvatarImg').src=img;document.getElementById('deleteAvatarImg').style.display='block';document.getElementById('deleteAvatarPlaceholder').style.display='none';}
   }
+}
 
+function updateAuthBar() {
+  const any=users.source||users.dest||users.delete;
+  if(!any)return;
+  const u=users.source||users.dest||users.delete;
+  const name=u.display_name||u.id;
+  const img=u.images?.[0]?.url||'';
   document.getElementById('statusDot').classList.add('active');
-  document.getElementById('statusText').textContent='Conectado — ' + name;
+  document.getElementById('statusText').textContent='Conectado — '+name;
   document.getElementById('authSubtext').textContent='Cuenta de Spotify vinculada correctamente';
   document.getElementById('authSection').classList.add('connected');
-}
-
-async function loadSourceContent() {
-  const token = tokens.source;
-  if (!token) return;
-  document.getElementById('loadingContent').style.display='block';
-
-  const [tracks, albums, artists, playlists, episodes] = await Promise.all([
-    spotifyFetchAll('https://api.spotify.com/v1/me/tracks?limit=50', token),
-    spotifyFetchAll('https://api.spotify.com/v1/me/albums?limit=50', token),
-    spotifyFetchAll('https://api.spotify.com/v1/me/following?type=artist&limit=50', token, 'artists'),
-    spotifyFetchAll('https://api.spotify.com/v1/me/playlists?limit=50', token),
-    spotifyFetchAll('https://api.spotify.com/v1/me/episodes?limit=50', token),
-  ]);
-
-  sourceContent = { tracks, albums, artists, playlists, episodes };
-
-  document.getElementById('cnt-tracks').textContent   = tracks.length;
-  document.getElementById('cnt-albums').textContent   = albums.length;
-  document.getElementById('cnt-artists').textContent  = artists.length;
-  document.getElementById('cnt-playlists').textContent= playlists.filter(p=>p.owner?.id===users.source?.id).length;
-  document.getElementById('cnt-episodes').textContent = episodes.length;
-  document.getElementById('loadingContent').style.display='none';
+  document.getElementById('disconnectBtn').style.display='inline-flex';
+  if(img){
+    document.getElementById('authAvatar').src=img;
+    document.getElementById('authAvatar').classList.add('visible');
+    document.getElementById('authAvatarPlaceholder').style.display='none';
+  }
 }
 
 function restoreUI() {
-  if (users.source) {
-    const name = users.source.display_name || users.source.id;
-    document.getElementById('sourceUser').style.display='block';
-    document.getElementById('sourceUserName').textContent=name;
-    document.getElementById('sourceBtn').style.display='none';
-    document.getElementById('contentPreview').style.display='block';
-    document.getElementById('statusDot').classList.add('active');
-    document.getElementById('statusText').textContent='Conectado — ' + name;
-    document.getElementById('authSection').classList.add('connected');
-    loadSourceContent();
-  }
-  if (users.dest) {
-    const name = users.dest.display_name || users.dest.id;
-    document.getElementById('destUser').style.display='block';
-    document.getElementById('destUserName').textContent=name;
-    document.getElementById('destBtn').style.display='none';
-  }
-  if (users.delete) {
-    const name = users.delete.display_name || users.delete.id;
-    document.getElementById('deleteUser').style.display='block';
-    document.getElementById('deleteUserName').textContent=name;
-    document.getElementById('deleteAccBtn').style.display='none';
-    document.getElementById('deleteBtn').disabled=false;
-  }
+  if(users.source) applyProfileToUI('source',users.source);
+  if(users.dest)   applyProfileToUI('dest',users.dest);
+  if(users.delete) applyProfileToUI('delete',users.delete);
+  if(users.source||users.dest||users.delete) updateAuthBar();
+  if(users.source && tokens.source){ showContentBrowser(); loadSourceContent(); }
   checkTransferReady();
 }
 
-function connectSource()  { startOAuth('source'); }
-function connectDest()    { startOAuth('dest');   }
-function connectDelete()  { startOAuth('delete'); }
-function connectSpotify() { startOAuth('source'); }
-function checkTransferReady() {
-  document.getElementById('transferBtn').disabled=!(tokens.source&&tokens.dest);
+function disconnectAll() {
+  ['source','dest','delete'].forEach(r=>{
+    tokens[r]=null; users[r]=null;
+    localStorage.removeItem('tok_'+r); localStorage.removeItem('usr_'+r);
+  });
+  sourceContent={tracks:[],albums:[],artists:[],playlists:[],episodes:[]};
+  location.reload();
 }
 
-async function spotifyGet(url,token) {
-  const r = await fetch(url,{headers:{Authorization:'Bearer '+token}});
-  console.log('📡 GET', url, '→ status:', r.status);
-  if (r.status===429){const w=parseInt(r.headers.get('Retry-After')||'3')*1000;await sleep(w);return spotifyGet(url,token);}
-  if (!r.ok) { const err = await r.text(); console.error('❌ GET error:', err); return null; }
+function connectSource(){ startOAuth('source'); }
+function connectDest()  { startOAuth('dest');   }
+function connectDelete(){ startOAuth('delete'); }
+function checkTransferReady(){ document.getElementById('transferBtn').disabled=!(tokens.source&&tokens.dest); }
+
+// ─── SPOTIFY HELPERS ──────────────────────────────
+async function spGet(url,token){
+  const r=await fetch(url,{headers:{Authorization:'Bearer '+token}});
+  if(r.status===429){await sleep(parseInt(r.headers.get('Retry-After')||'3')*1000);return spGet(url,token);}
+  if(!r.ok){const e=await r.text();console.error('GET error',r.status,e);return null;}
   return r.json();
 }
-async function spotifyFetchAll(url,token,key='items') {
+async function spFetchAll(url,token,key='items'){
   let items=[];
   while(url){
-    const data=await spotifyGet(url,token);
-    if(!data)break;
-    if(key==='artists'){items.push(...(data.artists?.items||[]));url=data.artists?.next;}
-    else{items.push(...(data.items||[]));url=data.next;}
+    const d=await spGet(url,token); if(!d)break;
+    if(key==='artists'){items.push(...(d.artists?.items||[]));url=d.artists?.next;}
+    else{items.push(...(d.items||[]));url=d.next;}
   }
   return items;
 }
-async function spotifyReq(method,url,token,body=null) {
+async function spReq(method,url,token,body=null){
   while(true){
     const opts={method,headers:{Authorization:'Bearer '+token,'Content-Type':'application/json'}};
     if(body)opts.body=JSON.stringify(body);
     const r=await fetch(url,opts);
-    if(r.status===429){const w=parseInt(r.headers.get('Retry-After')||'3')*1000;await sleep(w);continue;}
-    if(r.status===403){const txt=await r.text();console.error('🚫 403 on',method,url,'→',txt);}
+    if(r.status===429){await sleep(parseInt(r.headers.get('Retry-After')||'3')*1000);continue;}
+    if(r.status===403){const t=await r.text();console.error('🚫 403',method,url,t);}
     return r;
   }
 }
 const sleep=ms=>new Promise(r=>setTimeout(r,ms));
 
+// ─── CONTENT BROWSER ──────────────────────────────
+async function loadSourceContent(){
+  document.getElementById('cbLoading').style.display='block';
+  document.getElementById('cbTable').style.display='none';
+  document.getElementById('cbPagination').style.display='none';
+  const token=tokens.source;
+  const [tracks,albums,artists,playlists,episodes]=await Promise.all([
+    spFetchAll('https://api.spotify.com/v1/me/tracks?limit=50',token),
+    spFetchAll('https://api.spotify.com/v1/me/albums?limit=50',token),
+    spFetchAll('https://api.spotify.com/v1/me/following?type=artist&limit=50',token,'artists'),
+    spFetchAll('https://api.spotify.com/v1/me/playlists?limit=50',token),
+    spFetchAll('https://api.spotify.com/v1/me/episodes?limit=50',token),
+  ]);
+  sourceContent={tracks,albums,artists,playlists,episodes};
+  document.getElementById('tc-tracks').textContent=tracks.length;
+  document.getElementById('tc-albums').textContent=albums.length;
+  document.getElementById('tc-artists').textContent=artists.length;
+  document.getElementById('tc-playlists').textContent=playlists.length;
+  document.getElementById('tc-episodes').textContent=episodes.length;
+  document.getElementById('cbLoading').style.display='none';
+  renderTable();
+}
+
+function showContentBrowser(){ document.getElementById('contentBrowser').classList.add('visible'); }
+
+function switchTab(tab){
+  currentTab=tab; currentPage=0; selectedItems.clear();
+  document.querySelectorAll('.cb-tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('tab-'+tab).classList.add('active');
+  renderTable();
+}
+
+function getTabData(){
+  if(currentTab==='tracks')   return sourceContent.tracks;
+  if(currentTab==='albums')   return sourceContent.albums;
+  if(currentTab==='artists')  return sourceContent.artists;
+  if(currentTab==='playlists')return sourceContent.playlists;
+  if(currentTab==='episodes') return sourceContent.episodes;
+  return [];
+}
+
+function renderTable(){
+  const data=getTabData();
+  const total=data.length;
+  const totalPages=Math.max(1,Math.ceil(total/PAGE_SIZE));
+  const start=currentPage*PAGE_SIZE;
+  const page=data.slice(start,start+PAGE_SIZE);
+
+  const thead=document.getElementById('cbThead');
+  const tbody=document.getElementById('cbTbody');
+
+  // Headers
+  let headers='<tr><th><input type="checkbox" id="cbCheckAll" onchange="toggleAll(this)" style="accent-color:#1DB954;"></th><th>#</th>';
+  if(currentTab==='playlists') headers+='<th>Nombre</th><th>Tracks</th><th>Público</th><th>Owner</th>';
+  else if(currentTab==='tracks') headers+='<th>Canción</th><th>Artista</th><th>Álbum</th>';
+  else if(currentTab==='albums') headers+='<th>Álbum</th><th>Artista</th><th>Año</th>';
+  else if(currentTab==='artists') headers+='<th>Artista</th><th>Géneros</th>';
+  else if(currentTab==='episodes') headers+='<th>Episodio</th><th>Podcast</th>';
+  headers+='</tr>';
+  thead.innerHTML=headers;
+
+  // Rows
+  let rows='';
+  page.forEach((item,i)=>{
+    const globalIdx=start+i;
+    const checked=selectedItems.has(globalIdx)?'checked':'';
+    rows+=`<tr><td><input type="checkbox" ${checked} onchange="toggleItem(${globalIdx},this)" style="accent-color:#1DB954;"></td><td class="cb-num">${globalIdx+1}.</td>`;
+    if(currentTab==='playlists'){
+      const img=item.images?.[0]?.url||'';
+      rows+=`<td class="cb-name"><div style="display:flex;align-items:center;gap:8px;">${img?`<img src="${img}" class="cb-img">`:'<div class="cb-img" style="background:#222;border-radius:4px;"></div>'}<span>${item.name||'—'}</span></div></td>`;
+      rows+=`<td class="cb-sub">${item.tracks?.total||0}</td>`;
+      rows+=`<td>${item.public?'<span class="cb-badge">✓</span>':'<span class="cb-badge no">✕</span>'}</td>`;
+      rows+=`<td class="cb-sub">${item.owner?.display_name||item.owner?.id||'—'}</td>`;
+    } else if(currentTab==='tracks'){
+      const t=item.track;
+      const img=t?.album?.images?.[0]?.url||'';
+      rows+=`<td class="cb-name"><div style="display:flex;align-items:center;gap:8px;">${img?`<img src="${img}" class="cb-img">`:'<div class="cb-img" style="background:#222;border-radius:4px;"></div>'}<span>${t?.name||'—'}</span></div></td>`;
+      rows+=`<td class="cb-sub">${t?.artists?.map(a=>a.name).join(', ')||'—'}</td>`;
+      rows+=`<td class="cb-sub">${t?.album?.name||'—'}</td>`;
+    } else if(currentTab==='albums'){
+      const a=item.album;
+      const img=a?.images?.[0]?.url||'';
+      rows+=`<td class="cb-name"><div style="display:flex;align-items:center;gap:8px;">${img?`<img src="${img}" class="cb-img">`:'<div class="cb-img" style="background:#222;border-radius:4px;"></div>'}<span>${a?.name||'—'}</span></div></td>`;
+      rows+=`<td class="cb-sub">${a?.artists?.map(x=>x.name).join(', ')||'—'}</td>`;
+      rows+=`<td class="cb-sub">${a?.release_date?.substring(0,4)||'—'}</td>`;
+    } else if(currentTab==='artists'){
+      const img=item.images?.[0]?.url||'';
+      rows+=`<td class="cb-name"><div style="display:flex;align-items:center;gap:8px;">${img?`<img src="${img}" class="cb-img" style="border-radius:50%;">`:'<div class="cb-img" style="background:#222;border-radius:50%;"></div>'}<span>${item.name||'—'}</span></div></td>`;
+      rows+=`<td class="cb-sub">${(item.genres||[]).slice(0,3).join(', ')||'—'}</td>`;
+    } else if(currentTab==='episodes'){
+      const e=item.episode;
+      const img=e?.images?.[0]?.url||'';
+      rows+=`<td class="cb-name"><div style="display:flex;align-items:center;gap:8px;">${img?`<img src="${img}" class="cb-img">`:'<div class="cb-img" style="background:#222;border-radius:4px;"></div>'}<span>${e?.name||'—'}</span></div></td>`;
+      rows+=`<td class="cb-sub">${e?.show?.name||'—'}</td>`;
+    }
+    rows+='</tr>';
+  });
+  tbody.innerHTML=rows||'<tr><td colspan="6" style="text-align:center;color:var(--muted);padding:20px;">Sin contenido</td></tr>';
+
+  document.getElementById('cbTable').style.display='table';
+  document.getElementById('cbPagination').style.display='flex';
+  document.getElementById('cbPageInfo').textContent=`Página ${currentPage+1} de ${totalPages}  (${total} total)`;
+  document.getElementById('btnPrev').disabled=currentPage===0;
+  document.getElementById('btnNext').disabled=currentPage>=totalPages-1;
+
+  const hasSource=!!tokens.source;
+  const hasDest=!!tokens.dest;
+  document.getElementById('transferSelectedBtn').disabled=!hasSource||!hasDest||selectedItems.size===0;
+  document.getElementById('transferAllBtn').disabled=!hasSource||!hasDest;
+  updateSelInfo();
+}
+
+function toggleAll(cb){
+  const data=getTabData();
+  const start=currentPage*PAGE_SIZE;
+  const page=data.slice(start,start+PAGE_SIZE);
+  page.forEach((_,i)=>{ const gi=start+i; cb.checked?selectedItems.add(gi):selectedItems.delete(gi); });
+  renderTable();
+}
+
+function toggleItem(idx,cb){ cb.checked?selectedItems.add(idx):selectedItems.delete(idx); updateSelInfo(); document.getElementById('transferSelectedBtn').disabled=selectedItems.size===0||!tokens.dest; }
+
+function updateSelInfo(){ document.getElementById('selInfo').textContent=`Seleccionados: ${selectedItems.size}`; }
+
+function changePage(dir){ currentPage+=dir; renderTable(); }
+
+// ─── TRANSFER ─────────────────────────────────────
+async function transferAll(){
+  selectedItems.clear();
+  getTabData().forEach((_,i)=>selectedItems.add(i));
+  await transferSelected();
+}
+
+async function transferSelected(){
+  if(!tokens.source||!tokens.dest)return;
+  const data=getTabData();
+  const items=[...selectedItems].sort((a,b)=>a-b).map(i=>data[i]).filter(Boolean);
+  if(!items.length)return;
+  document.getElementById('transferSelectedBtn').disabled=true;
+  document.getElementById('transferAllBtn').disabled=true;
+  showLog(`Transfiriendo ${items.length} ${currentTab}...`);
+  const dst=tokens.dest;
+  try{
+    if(currentTab==='tracks'){
+      for(let i=0;i<items.length;i+=50){
+        const ids=items.slice(i,i+50).map(t=>t.track?.id).filter(Boolean);
+        if(ids.length)await spReq('PUT','https://api.spotify.com/v1/me/tracks',dst,{ids});
+        setProgress((i/items.length)*100,`${Math.min(i+50,items.length)}/${items.length}`);
+        await sleep(300);
+      }
+    } else if(currentTab==='albums'){
+      for(let i=0;i<items.length;i+=20){
+        const ids=items.slice(i,i+20).map(a=>a.album?.id).filter(Boolean);
+        if(ids.length)await spReq('PUT','https://api.spotify.com/v1/me/albums',dst,{ids});
+        setProgress((i/items.length)*100,`${Math.min(i+20,items.length)}/${items.length}`);
+        await sleep(300);
+      }
+    } else if(currentTab==='artists'){
+      for(let i=0;i<items.length;i+=50){
+        const ids=items.slice(i,i+50).map(a=>a.id).filter(Boolean);
+        if(ids.length)await spReq('PUT',`https://api.spotify.com/v1/me/following?type=artist&ids=${ids.join(',')}`,dst);
+        setProgress((i/items.length)*100,`${Math.min(i+50,items.length)}/${items.length}`);
+        await sleep(300);
+      }
+    } else if(currentTab==='playlists'){
+      for(let idx=0;idx<items.length;idx++){
+        const pl=items[idx];
+        const newPl=await(await spReq('POST',`https://api.spotify.com/v1/users/${users.dest?.id}/playlists`,dst,{name:pl.name,description:pl.description||'',public:pl.public})).json();
+        if(newPl.id){
+          const plTracks=await spFetchAll(`https://api.spotify.com/v1/playlists/${pl.id}/tracks?limit=100`,tokens.source);
+          for(let i=0;i<plTracks.length;i+=100){
+            const uris=plTracks.slice(i,i+100).map(t=>t.track?.uri).filter(Boolean);
+            if(uris.length)await spReq('POST',`https://api.spotify.com/v1/playlists/${newPl.id}/tracks`,dst,{uris});
+            await sleep(300);
+          }
+          log(`✓ "${pl.name}" (${plTracks.length} canciones)`,'success');
+        }
+        setProgress((idx/items.length)*100,`Playlists: ${idx+1}/${items.length}`);
+      }
+    } else if(currentTab==='episodes'){
+      for(let i=0;i<items.length;i+=50){
+        const ids=items.slice(i,i+50).map(e=>e.episode?.id).filter(Boolean);
+        if(ids.length)await spReq('PUT','https://api.spotify.com/v1/me/episodes',dst,{ids});
+        setProgress((i/items.length)*100,`${Math.min(i+50,items.length)}/${items.length}`);
+        await sleep(300);
+      }
+    }
+    setProgress(100,'¡Completado!');
+    log(`🎉 ${items.length} ${currentTab} transferidos exitosamente`,'success');
+  }catch(e){log('❌ Error: '+e.message,'error');}
+  finishLog();
+  document.getElementById('transferSelectedBtn').disabled=false;
+  document.getElementById('transferAllBtn').disabled=false;
+}
+
+async function startTransfer(){
+  if(!tokens.source||!tokens.dest)return;
+  document.getElementById('transferBtn').disabled=true;
+  showLog('Transferencia completa en progreso');
+  const dst=tokens.dest;
+  try{
+    const steps=[
+      {name:'tracks',fn:async()=>{
+        const items=sourceContent.tracks;
+        for(let i=0;i<items.length;i+=50){const ids=items.slice(i,i+50).map(t=>t.track?.id).filter(Boolean);if(ids.length)await spReq('PUT','https://api.spotify.com/v1/me/tracks',dst,{ids});setProgress((i/Math.max(items.length,1))*20,`Canciones: ${Math.min(i+50,items.length)}/${items.length}`);await sleep(300);}
+        log(`✓ ${items.length} canciones transferidas`,'success');
+      }},
+      {name:'albums',fn:async()=>{
+        const items=sourceContent.albums;
+        for(let i=0;i<items.length;i+=20){const ids=items.slice(i,i+20).map(a=>a.album?.id).filter(Boolean);if(ids.length)await spReq('PUT','https://api.spotify.com/v1/me/albums',dst,{ids});setProgress(20+(i/Math.max(items.length,1))*20,`Álbumes: ${Math.min(i+20,items.length)}/${items.length}`);await sleep(300);}
+        log(`✓ ${items.length} álbumes transferidos`,'success');
+      }},
+      {name:'artists',fn:async()=>{
+        const items=sourceContent.artists;
+        for(let i=0;i<items.length;i+=50){const ids=items.slice(i,i+50).map(a=>a.id).filter(Boolean);if(ids.length)await spReq('PUT',`https://api.spotify.com/v1/me/following?type=artist&ids=${ids.join(',')}`,dst);setProgress(40+(i/Math.max(items.length,1))*20,`Artistas: ${Math.min(i+50,items.length)}/${items.length}`);await sleep(300);}
+        log(`✓ ${items.length} artistas transferidos`,'success');
+      }},
+      {name:'playlists',fn:async()=>{
+        const items=sourceContent.playlists.filter(p=>p.owner?.id===users.source?.id);
+        for(let idx=0;idx<items.length;idx++){
+          const pl=items[idx];
+          const newPl=await(await spReq('POST',`https://api.spotify.com/v1/users/${users.dest?.id}/playlists`,dst,{name:pl.name,description:pl.description||'',public:pl.public})).json();
+          if(newPl.id){const plTracks=await spFetchAll(`https://api.spotify.com/v1/playlists/${pl.id}/tracks?limit=100`,tokens.source);for(let i=0;i<plTracks.length;i+=100){const uris=plTracks.slice(i,i+100).map(t=>t.track?.uri).filter(Boolean);if(uris.length)await spReq('POST',`https://api.spotify.com/v1/playlists/${newPl.id}/tracks`,dst,{uris});await sleep(300);}log(`✓ "${pl.name}"`,'success');}
+          setProgress(60+(idx/Math.max(items.length,1))*30,`Playlists: ${idx+1}/${items.length}`);
+        }
+      }},
+      {name:'episodes',fn:async()=>{
+        const items=sourceContent.episodes;
+        for(let i=0;i<items.length;i+=50){const ids=items.slice(i,i+50).map(e=>e.episode?.id).filter(Boolean);if(ids.length)await spReq('PUT','https://api.spotify.com/v1/me/episodes',dst,{ids});await sleep(300);}
+        log(`✓ ${items.length} episodios transferidos`,'success');
+      }}
+    ];
+    for(const s of steps)await s.fn();
+    setProgress(100,'¡Transferencia completada!');
+    log('🎉 ¡Transferencia completa exitosamente!','success');
+  }catch(e){log('❌ Error: '+e.message,'error');}
+  finishLog();
+  document.getElementById('transferBtn').disabled=false;
+}
+
+// ─── LOG HELPERS ──────────────────────────────────
 function showLog(title,isRed=false){
   const panel=document.getElementById('logPanel');
   panel.classList.add('visible');
@@ -622,194 +765,81 @@ function showLog(title,isRed=false){
 function log(msg,type='info'){
   const body=document.getElementById('logBody');
   const now=new Date().toLocaleTimeString('es-NI',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
-  const line=document.createElement('div');
-  line.className='log-line';
+  const line=document.createElement('div'); line.className='log-line';
   line.innerHTML=`<span class="log-time">${now}</span><span class="log-msg ${type}">${msg}</span>`;
-  body.appendChild(line);
-  body.scrollTop=body.scrollHeight;
+  body.appendChild(line); body.scrollTop=body.scrollHeight;
 }
-function setProgress(pct,text){
-  document.getElementById('progressFill').style.width=pct+'%';
-  document.getElementById('progressText').textContent=text;
-}
-function finishLog(){document.getElementById('logRunning').style.display='none';}
+function setProgress(pct,text){ document.getElementById('progressFill').style.width=pct+'%'; document.getElementById('progressText').textContent=text; }
+function finishLog(){ document.getElementById('logRunning').style.display='none'; }
 
-async function startTransfer(){
-  if(!tokens.source||!tokens.dest)return;
-  document.getElementById('transferBtn').disabled=true;
-  showLog('Transferencia en progreso');
-  const dst=tokens.dest;
-  const doTracks   = document.getElementById('cb-tracks').checked;
-  const doAlbums   = document.getElementById('cb-albums').checked;
-  const doArtists  = document.getElementById('cb-artists').checked;
-  const doPlaylists= document.getElementById('cb-playlists').checked;
-  const doEpisodes = document.getElementById('cb-episodes').checked;
-  let progress = 0;
-  const steps = [doTracks,doAlbums,doArtists,doPlaylists,doEpisodes].filter(Boolean).length;
-  const stepSize = steps > 0 ? 100/steps : 100;
-
-  try{
-    // Canciones
-    if(doTracks){
-      const tracks = sourceContent.tracks;
-      log(`Transfiriendo ${tracks.length} canciones...`,'info');
-      for(let i=0;i<tracks.length;i+=50){
-        const ids=tracks.slice(i,i+50).map(t=>t.track?.id).filter(Boolean);
-        if(ids.length)await spotifyReq('PUT','https://api.spotify.com/v1/me/tracks',dst,{ids});
-        setProgress(progress+(i/Math.max(tracks.length,1))*stepSize,`Canciones: ${Math.min(i+50,tracks.length)}/${tracks.length}`);
-        await sleep(300);
-      }
-      progress+=stepSize;
-      log(`✓ ${tracks.length} canciones transferidas`,'success');
-    }
-
-    // Álbumes
-    if(doAlbums){
-      const albums = sourceContent.albums;
-      log(`Transfiriendo ${albums.length} álbumes...`,'info');
-      for(let i=0;i<albums.length;i+=20){
-        const ids=albums.slice(i,i+20).map(a=>a.album?.id).filter(Boolean);
-        if(ids.length)await spotifyReq('PUT','https://api.spotify.com/v1/me/albums',dst,{ids});
-        setProgress(progress+(i/Math.max(albums.length,1))*stepSize,`Álbumes: ${Math.min(i+20,albums.length)}/${albums.length}`);
-        await sleep(300);
-      }
-      progress+=stepSize;
-      log(`✓ ${albums.length} álbumes transferidos`,'success');
-    }
-
-    // Artistas
-    if(doArtists){
-      const artists = sourceContent.artists;
-      log(`Transfiriendo ${artists.length} artistas...`,'info');
-      for(let i=0;i<artists.length;i+=50){
-        const ids=artists.slice(i,i+50).map(a=>a.id).filter(Boolean);
-        if(ids.length)await spotifyReq('PUT',`https://api.spotify.com/v1/me/following?type=artist&ids=${ids.join(',')}`,dst);
-        setProgress(progress+(i/Math.max(artists.length,1))*stepSize,`Artistas: ${Math.min(i+50,artists.length)}/${artists.length}`);
-        await sleep(300);
-      }
-      progress+=stepSize;
-      log(`✓ ${artists.length} artistas transferidos`,'success');
-    }
-
-    // Playlists
-    if(doPlaylists){
-      const myPlaylists=sourceContent.playlists.filter(p=>p.owner?.id===users.source?.id);
-      log(`Transfiriendo ${myPlaylists.length} playlists...`,'info');
-      for(let idx=0;idx<myPlaylists.length;idx++){
-        const pl=myPlaylists[idx];
-        const newPl=await(await spotifyReq('POST',`https://api.spotify.com/v1/users/${users.dest?.id}/playlists`,dst,{name:pl.name,description:pl.description||'',public:pl.public})).json();
-        if(newPl.id){
-          const plTracks=await spotifyFetchAll(`https://api.spotify.com/v1/playlists/${pl.id}/tracks?limit=100`,tokens.source);
-          for(let i=0;i<plTracks.length;i+=100){
-            const uris=plTracks.slice(i,i+100).map(t=>t.track?.uri).filter(Boolean);
-            if(uris.length)await spotifyReq('POST',`https://api.spotify.com/v1/playlists/${newPl.id}/tracks`,dst,{uris});
-            await sleep(300);
-          }
-          log(`✓ "${pl.name}" (${plTracks.length} canciones)`,'success');
-        }
-        setProgress(progress+(idx/Math.max(myPlaylists.length,1))*stepSize,`Playlists: ${idx+1}/${myPlaylists.length}`);
-      }
-      progress+=stepSize;
-    }
-
-    // Episodios
-    if(doEpisodes){
-      const episodes=sourceContent.episodes;
-      log(`Transfiriendo ${episodes.length} episodios...`,'info');
-      for(let i=0;i<episodes.length;i+=50){
-        const ids=episodes.slice(i,i+50).map(e=>e.episode?.id).filter(Boolean);
-        if(ids.length)await spotifyReq('PUT','https://api.spotify.com/v1/me/episodes',dst,{ids});
-        await sleep(300);
-      }
-      progress+=stepSize;
-      log(`✓ ${episodes.length} episodios transferidos`,'success');
-    }
-
-    setProgress(100,'¡Transferencia completada!');
-    log('🎉 ¡Transferencia completada exitosamente!','success');
-  }catch(e){log('❌ Error: '+e.message,'error');}
-  finishLog();
-  document.getElementById('transferBtn').disabled=false;
-}
-
-function showDeleteModal(){document.getElementById('deleteModal').classList.add('open');}
-function closeModal()     {document.getElementById('deleteModal').classList.remove('open');}
+// ─── DELETE ───────────────────────────────────────
+function showDeleteModal(){ document.getElementById('deleteModal').classList.add('open'); }
+function closeModal(){ document.getElementById('deleteModal').classList.remove('open'); }
 
 async function startDelete(){
   closeModal();
-  if(!tokens.delete) return;
-  document.getElementById('deleteBtn').disabled = true;
-  showLog('Limpiando biblioteca...', true);
-  const token = tokens.delete;
-  try {
+  if(!tokens.delete)return;
+  document.getElementById('deleteBtn').disabled=true;
+  showLog('Limpiando biblioteca...',true);
+  const token=tokens.delete;
+  try{
     log('Eliminando canciones favoritas...','info');
-    const tracks = await spotifyFetchAll('https://api.spotify.com/v1/me/tracks?limit=50', token);
-    setProgress(5, `${tracks.length} canciones encontradas`);
-    for (let i = 0; i < tracks.length; i += 40) {
-      const uris = tracks.slice(i, i + 40).map(t => t.track?.uri).filter(Boolean);
-      if (uris.length) {
-        const r = await spotifyReq('DELETE', `https://api.spotify.com/v1/me/library?uris=${uris.join(',')}`, token);
-        console.log('🗑 tracks delete status:', r.status);
-      }
-      setProgress(5 + (i / Math.max(tracks.length, 1)) * 18, `Canciones: ${Math.min(i + 40, tracks.length)}/${tracks.length}`);
+    const tracks=await spFetchAll('https://api.spotify.com/v1/me/tracks?limit=50',token);
+    setProgress(5,`${tracks.length} canciones encontradas`);
+    for(let i=0;i<tracks.length;i+=40){
+      const uris=tracks.slice(i,i+40).map(t=>t.track?.uri).filter(Boolean);
+      if(uris.length)await spReq('DELETE',`https://api.spotify.com/v1/me/library?uris=${uris.join(',')}`,token);
+      setProgress(5+(i/Math.max(tracks.length,1))*18,`Canciones: ${Math.min(i+40,tracks.length)}/${tracks.length}`);
       await sleep(400);
     }
     log(`✓ ${tracks.length} canciones eliminadas`,'success');
 
     log('Eliminando álbumes...','info');
-    const albums = await spotifyFetchAll('https://api.spotify.com/v1/me/albums?limit=50', token);
-    setProgress(25, `${albums.length} álbumes encontrados`);
-    for (let i = 0; i < albums.length; i += 40) {
-      const uris = albums.slice(i, i + 40).map(a => a.album?.uri).filter(Boolean);
-      if (uris.length) {
-        await spotifyReq('DELETE', `https://api.spotify.com/v1/me/library?uris=${uris.join(',')}`, token);
-      }
-      setProgress(25 + (i / Math.max(albums.length, 1)) * 18, `Álbumes: ${Math.min(i + 40, albums.length)}/${albums.length}`);
+    const albums=await spFetchAll('https://api.spotify.com/v1/me/albums?limit=50',token);
+    setProgress(25,`${albums.length} álbumes encontrados`);
+    for(let i=0;i<albums.length;i+=40){
+      const uris=albums.slice(i,i+40).map(a=>a.album?.uri).filter(Boolean);
+      if(uris.length)await spReq('DELETE',`https://api.spotify.com/v1/me/library?uris=${uris.join(',')}`,token);
+      setProgress(25+(i/Math.max(albums.length,1))*18,`Álbumes: ${Math.min(i+40,albums.length)}/${albums.length}`);
       await sleep(400);
     }
     log(`✓ ${albums.length} álbumes eliminados`,'success');
 
     log('Dejando de seguir artistas...','info');
-    const artists = await spotifyFetchAll('https://api.spotify.com/v1/me/following?type=artist&limit=50', token, 'artists');
-    setProgress(45, `${artists.length} artistas encontrados`);
-    for (let i = 0; i < artists.length; i += 40) {
-      const uris = artists.slice(i, i + 40).map(a => `spotify:artist:${a.id}`).filter(Boolean);
-      if (uris.length) {
-        await spotifyReq('DELETE', `https://api.spotify.com/v1/me/library?uris=${uris.join(',')}`, token);
-      }
-      setProgress(45 + (i / Math.max(artists.length, 1)) * 18, `Artistas: ${Math.min(i + 40, artists.length)}/${artists.length}`);
+    const artists=await spFetchAll('https://api.spotify.com/v1/me/following?type=artist&limit=50',token,'artists');
+    setProgress(45,`${artists.length} artistas encontrados`);
+    for(let i=0;i<artists.length;i+=40){
+      const uris=artists.slice(i,i+40).map(a=>`spotify:artist:${a.id}`).filter(Boolean);
+      if(uris.length)await spReq('DELETE',`https://api.spotify.com/v1/me/library?uris=${uris.join(',')}`,token);
+      setProgress(45+(i/Math.max(artists.length,1))*18,`Artistas: ${Math.min(i+40,artists.length)}/${artists.length}`);
       await sleep(400);
     }
-    log(`✓ ${artists.length} artistas dejados de seguir`,'success');
+    log(`✓ ${artists.length} artistas eliminados`,'success');
 
     log('Eliminando playlists...','info');
-    const playlists = await spotifyFetchAll('https://api.spotify.com/v1/me/playlists?limit=50', token);
-    setProgress(65, `${playlists.length} playlists encontradas`);
-    for (let i = 0; i < playlists.length; i++) {
-      const uri = `spotify:playlist:${playlists[i].id}`;
-      await spotifyReq('DELETE', `https://api.spotify.com/v1/me/library?uris=${uri}`, token);
-      setProgress(65 + (i / Math.max(playlists.length, 1)) * 18, `Playlists: ${i + 1}/${playlists.length}`);
+    const playlists=await spFetchAll('https://api.spotify.com/v1/me/playlists?limit=50',token);
+    setProgress(65,`${playlists.length} playlists encontradas`);
+    for(let i=0;i<playlists.length;i++){
+      const uri=`spotify:playlist:${playlists[i].id}`;
+      await spReq('DELETE',`https://api.spotify.com/v1/me/library?uris=${uri}`,token);
+      setProgress(65+(i/Math.max(playlists.length,1))*18,`Playlists: ${i+1}/${playlists.length}`);
       await sleep(300);
     }
-    log(`✓ ${playlists.length} playlists eliminadas de la biblioteca`,'success');
+    log(`✓ ${playlists.length} playlists eliminadas`,'success');
 
     log('Eliminando episodios...','info');
-    const episodes = await spotifyFetchAll('https://api.spotify.com/v1/me/episodes?limit=50', token);
-    for (let i = 0; i < episodes.length; i += 40) {
-      const uris = episodes.slice(i, i + 40).map(e => e.episode?.uri).filter(Boolean);
-      if (uris.length) {
-        await spotifyReq('DELETE', `https://api.spotify.com/v1/me/library?uris=${uris.join(',')}`, token);
-      }
+    const episodes=await spFetchAll('https://api.spotify.com/v1/me/episodes?limit=50',token);
+    for(let i=0;i<episodes.length;i+=40){
+      const uris=episodes.slice(i,i+40).map(e=>e.episode?.uri).filter(Boolean);
+      if(uris.length)await spReq('DELETE',`https://api.spotify.com/v1/me/library?uris=${uris.join(',')}`,token);
       await sleep(400);
     }
     log(`✓ ${episodes.length} episodios eliminados`,'success');
-    setProgress(100, '¡Biblioteca limpiada completamente!');
+    setProgress(100,'¡Biblioteca limpiada completamente!');
     log('🎉 ¡Biblioteca limpiada exitosamente!','success');
-  } catch(e) {
-    log('❌ Error: ' + e.message, 'error');
-  }
+  }catch(e){log('❌ Error: '+e.message,'error');}
   finishLog();
-  document.getElementById('deleteBtn').disabled = false;
+  document.getElementById('deleteBtn').disabled=false;
 }
 </script>
 </body>

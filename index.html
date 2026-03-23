@@ -205,7 +205,7 @@
       <h1><span class="grad">VHS Streaming</span> <span class="plain">– Spotify Tools</span></h1>
       <p>MUSIC ACCOUNT MANAGER</p>
     </div>
-    <span class="version-tag">v3.9</span>
+    <span class="version-tag">v4.0</span>
   </header>
 
   <div class="hero">
@@ -728,14 +728,18 @@ async function pushPlaylists(playlists, srcToken, dstToken) {
         description: pl.description || '',
         public: pl.public ?? false
       });
+      console.log('CREATE playlist status:', createRes.status, pl.name);
       if (!createRes.ok) {
-        log(`❌ Falló creación de "${esc(pl.name)}"`, 'error');
+        const errTxt = await createRes.text().catch(()=>'');
+        console.error('CREATE failed:', errTxt);
+        log(`❌ Falló creación de "${esc(pl.name)}" - ${createRes.status}: ${errTxt}`, 'error');
         setProgress(55 + ((idx + 1) / all.length) * 25, `Playlists: ${idx + 1}/${all.length}`);
         continue;
       }
       let newPl;
       try { newPl = await createRes.json(); }
       catch(e) { log(`❌ Error parseando playlist "${esc(pl.name)}"`, 'error'); continue; }
+      console.log('NEW playlist ID:', newPl?.id, 'for:', pl.name);
       if (!newPl?.id) { log(`❌ No ID para "${esc(pl.name)}"`, 'error'); continue; }
 
       // Cover image

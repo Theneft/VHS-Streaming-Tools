@@ -14,9 +14,9 @@
   }
   *{margin:0;padding:0;box-sizing:border-box;}
   body{background:var(--bg);color:var(--text);font-family:'DM Mono',monospace;min-height:100vh;overflow-x:hidden;}
-  body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(155,48,255,0.03) 1px,transparent 1px),linear-gradient(90deg,rgba(155,48,255,0.03) 1px,transparent 1px);background-size:44px 44px;pointer-events:none;z-index:0;}
-  .orb1{position:fixed;width:700px;height:700px;background:radial-gradient(circle,rgba(155,48,255,0.07) 0%,transparent 65%);border-radius:50%;top:-250px;right:-200px;pointer-events:none;z-index:0;animation:orbA 10s ease-in-out infinite;}
-  .orb2{position:fixed;width:500px;height:500px;background:radial-gradient(circle,rgba(29,185,84,0.05) 0%,transparent 65%);border-radius:50%;bottom:-150px;left:-150px;pointer-events:none;z-index:0;animation:orbB 13s ease-in-out infinite;}
+  body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(29,185,84,0.03) 1px,transparent 1px),linear-gradient(90deg,rgba(29,185,84,0.03) 1px,transparent 1px);background-size:44px 44px;pointer-events:none;z-index:0;}
+  .orb1{position:fixed;width:700px;height:700px;background:radial-gradient(circle,rgba(29,185,84,0.06) 0%,transparent 65%);border-radius:50%;top:-250px;right:-200px;pointer-events:none;z-index:0;animation:orbA 10s ease-in-out infinite;}
+  .orb2{position:fixed;width:500px;height:500px;background:radial-gradient(circle,rgba(29,185,84,0.04) 0%,transparent 65%);border-radius:50%;bottom:-150px;left:-150px;pointer-events:none;z-index:0;animation:orbB 13s ease-in-out infinite;}
   @keyframes orbA{0%,100%{transform:translate(0,0);}50%{transform:translate(-40px,40px);}}
   @keyframes orbB{0%,100%{transform:translate(0,0);}50%{transform:translate(30px,-30px);}}
   .container{position:relative;z-index:1;max-width:920px;margin:0 auto;padding:56px 24px 80px;}
@@ -24,28 +24,38 @@
   /* HEADER */
   header{display:flex;align-items:center;gap:18px;margin-bottom:60px;}
   .logo-wrap{position:relative;flex-shrink:0;width:58px;height:58px;}
-  .logo-ring{position:absolute;inset:0;border-radius:50%;border:2px solid transparent;background:linear-gradient(var(--bg),var(--bg)) padding-box,linear-gradient(135deg,var(--purple),var(--purple2),var(--purple)) border-box;animation:spinRing 3s linear infinite;}
+
+  /* Spinning ring */
+  .logo-ring{position:absolute;inset:0;border-radius:50%;border:2.5px solid transparent;background:linear-gradient(var(--bg),var(--bg)) padding-box,conic-gradient(from 0deg,#1DB954,#17a844,#1DB954,#44ff88,#1DB954) border-box;animation:spinRing 2.5s linear infinite;}
   @keyframes spinRing{to{transform:rotate(360deg);}}
-  .logo-inner{position:absolute;inset:5px;border-radius:50%;background:linear-gradient(135deg,#1a0030,#0d0010);display:flex;align-items:center;justify-content:center;}
-  .logo-inner svg{width:28px;height:28px;}
+
+  /* Pulsing glow */
+  .logo-glow{position:absolute;inset:-4px;border-radius:50%;background:radial-gradient(circle,rgba(29,185,84,0.25) 0%,transparent 70%);animation:glowPulse 2s ease-in-out infinite;}
+  @keyframes glowPulse{0%,100%{opacity:0.4;transform:scale(1);}50%{opacity:1;transform:scale(1.1);}}
+
+  .logo-inner{position:absolute;inset:5px;border-radius:50%;background:linear-gradient(135deg,#111,#0a0a0a);display:flex;align-items:center;justify-content:center;overflow:hidden;}
+  .logo-inner svg{width:28px;height:28px;animation:cassetteSpin 4s ease-in-out infinite;}
+  @keyframes cassetteSpin{0%,100%{transform:scale(1);}50%{transform:scale(1.08);}}
+
   .header-text{flex:1;}
   .header-text h1{font-family:Arial,sans-serif;font-size:1.05rem;font-weight:700;letter-spacing:0.02em;line-height:1.2;}
-  .header-text h1 .grad{background:linear-gradient(90deg,var(--purple),var(--purple2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:gradShift 4s ease-in-out infinite;}
-  @keyframes gradShift{0%,100%{filter:hue-rotate(0deg);}50%{filter:hue-rotate(30deg);}}
+  .header-text h1 .grad{background:linear-gradient(90deg,var(--purple),var(--purple2),var(--purple));background-size:200% auto;-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:gradMove 3s linear infinite;}
+  @keyframes gradMove{to{background-position:200% center;}}
+  .header-text h1 .plain{color:var(--text);}
   .header-text p{font-size:0.62rem;color:var(--muted);margin-top:2px;letter-spacing:0.1em;}
-  .version-tag{font-size:0.63rem;color:var(--purple2);background:rgba(155,48,255,0.1);border:1px solid rgba(155,48,255,0.25);padding:3px 10px;border-radius:20px;letter-spacing:0.06em;text-shadow:0 0 8px rgba(155,48,255,0.5);}
+  .version-tag{font-size:0.63rem;color:var(--green);background:rgba(29,185,84,0.08);border:1px solid rgba(29,185,84,0.2);padding:3px 10px;border-radius:20px;letter-spacing:0.06em;text-shadow:0 0 8px rgba(29,185,84,0.4);}
 
   /* HERO */
   .hero{margin-bottom:52px;}
   .hero h2{font-family:Arial,sans-serif;font-size:clamp(2.2rem,6vw,3.6rem);font-weight:900;line-height:1.06;margin-bottom:14px;}
-  .hero h2 em{font-style:normal;background:linear-gradient(90deg,var(--purple) 0%,var(--purple2) 60%,var(--purple) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+  .hero h2 em{font-style:normal;background:linear-gradient(90deg,var(--green) 0%,var(--green-dim) 60%,var(--green) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
   .hero p{font-family:Arial,sans-serif;color:#aaaaaa;font-size:0.9rem;line-height:1.7;max-width:460px;}
 
   /* AUTH */
   .auth-section{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:20px 24px;margin-bottom:36px;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;transition:border-color 0.3s;}
-  .auth-section.connected{border-color:rgba(155,48,255,0.4);background:rgba(155,48,255,0.04);}
+  .auth-section.connected{border-color:rgba(29,185,84,0.4);background:rgba(29,185,84,0.04);}
   .auth-left{display:flex;align-items:center;gap:12px;}
-  .auth-avatar{width:40px;height:40px;border-radius:50%;border:2px solid rgba(155,48,255,0.5);object-fit:cover;display:none;flex-shrink:0;}
+  .auth-avatar{width:40px;height:40px;border-radius:50%;border:2px solid rgba(29,185,84,0.4);object-fit:cover;display:none;flex-shrink:0;}
   .auth-avatar.visible{display:block;}
   .auth-avatar-placeholder{width:40px;height:40px;border-radius:50%;background:var(--surface2);border:2px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0;}
   .auth-info h3{font-size:0.88rem;font-weight:700;margin-bottom:2px;}
@@ -53,16 +63,13 @@
   .status-dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--muted);margin-right:6px;vertical-align:middle;}
   .status-dot.active{background:var(--green);box-shadow:0 0 10px var(--green);animation:pulse 2s infinite;}
   @keyframes pulse{0%,100%{opacity:1;}50%{opacity:0.4;}}
-  .auth-right{display:flex;gap:8px;flex-wrap:wrap;}
 
   /* BUTTONS */
   .btn{display:inline-flex;align-items:center;gap:7px;padding:9px 18px;border-radius:8px;font-family:'DM Mono',monospace;font-size:0.75rem;font-weight:500;cursor:pointer;border:none;transition:all 0.2s;text-decoration:none;white-space:nowrap;}
   .btn-green{background:linear-gradient(135deg,var(--green),var(--green-dim));color:#000;}
   .btn-green:hover{transform:translateY(-1px);box-shadow:0 4px 20px rgba(29,185,84,0.35);}
-  .btn-purple{background:linear-gradient(135deg,var(--purple),var(--purple2));color:#fff;}
-  .btn-purple:hover{transform:translateY(-1px);box-shadow:0 4px 20px rgba(155,48,255,0.4);}
   .btn-outline{background:transparent;color:#ccc;border:1px solid #444;}
-  .btn-outline:hover{border-color:var(--purple);color:var(--text);}
+  .btn-outline:hover{border-color:var(--green);color:var(--text);}
   .btn-ghost{background:transparent;color:var(--muted);border:1px solid var(--border);font-size:0.68rem;padding:6px 12px;}
   .btn-ghost:hover{color:var(--red);border-color:var(--red);}
   .btn-red{background:linear-gradient(135deg,var(--red),#c53030);color:#fff;}
@@ -76,27 +83,27 @@
   .tools-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:36px;}
   @media(max-width:620px){.tools-grid{grid-template-columns:1fr;}}
   .tool-card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:26px;transition:all 0.25s;position:relative;overflow:hidden;}
-  .tool-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--purple),var(--purple2));transform:scaleX(0);transform-origin:left;transition:transform 0.35s;}
+  .tool-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--green),var(--green-dim));transform:scaleX(0);transform-origin:left;transition:transform 0.35s;}
   .tool-card.danger::before{background:linear-gradient(90deg,var(--red),#fc8181);}
   .tool-card:hover::before{transform:scaleX(1);}
   .tool-card:hover{border-color:#333;transform:translateY(-2px);}
   .tool-number{font-size:0.62rem;color:var(--muted);letter-spacing:0.12em;margin-bottom:14px;display:block;}
   .tool-icon{width:44px;height:44px;border-radius:10px;display:flex;align-items:center;justify-content:center;margin-bottom:14px;font-size:1.2rem;}
-  .tool-icon.purple{background:rgba(155,48,255,0.15);}
+  .tool-icon.green{background:rgba(29,185,84,0.12);}
   .tool-icon.red{background:rgba(229,62,62,0.12);}
   .tool-card h3{font-size:1rem;font-weight:700;margin-bottom:8px;}
   .tool-card p{font-size:0.72rem;color:#aaaaaa;line-height:1.6;margin-bottom:18px;}
   .connect-label{font-size:0.67rem;color:#ccc;letter-spacing:0.08em;display:block;margin-bottom:7px;font-weight:600;}
 
   /* PROFILE BADGE */
-  .profile-badge{display:none;align-items:center;justify-content:space-between;gap:8px;background:rgba(155,48,255,0.07);border:1px solid rgba(155,48,255,0.2);border-radius:8px;padding:8px 10px;margin-top:8px;}
+  .profile-badge{display:none;align-items:center;justify-content:space-between;gap:8px;background:rgba(29,185,84,0.06);border:1px solid rgba(29,185,84,0.2);border-radius:8px;padding:8px 10px;margin-top:8px;}
   .profile-badge.visible{display:flex;}
   .profile-badge.red-badge{background:rgba(229,62,62,0.06);border-color:rgba(229,62,62,0.2);}
   .pb-left{display:flex;align-items:center;gap:8px;}
-  .pb-avatar{width:28px;height:28px;border-radius:50%;background:var(--surface2);border:1px solid rgba(155,48,255,0.3);display:flex;align-items:center;justify-content:center;font-size:0.75rem;flex-shrink:0;}
-  .pb-img{width:28px;height:28px;border-radius:50%;object-fit:cover;border:1px solid rgba(155,48,255,0.4);display:none;flex-shrink:0;}
+  .pb-avatar{width:28px;height:28px;border-radius:50%;background:var(--surface2);border:1px solid rgba(29,185,84,0.3);display:flex;align-items:center;justify-content:center;font-size:0.75rem;flex-shrink:0;}
+  .pb-img{width:28px;height:28px;border-radius:50%;object-fit:cover;border:1px solid rgba(29,185,84,0.4);display:none;flex-shrink:0;}
   .pb-name{font-size:0.72rem;color:#ccc;}
-  .pb-disconnect{font-size:0.6rem;color:var(--muted);cursor:pointer;background:none;border:none;padding:2px 6px;border-radius:4px;transition:color 0.2s;}
+  .pb-disconnect{font-size:0.6rem;color:var(--muted);cursor:pointer;background:none;border:none;padding:2px 6px;border-radius:4px;transition:color 0.2s;font-family:'DM Mono',monospace;}
   .pb-disconnect:hover{color:var(--red);}
 
   /* CONTENT BROWSER */
@@ -169,45 +176,43 @@
   .credits-icon{font-size:1.4rem;display:block;margin-bottom:10px;animation:floatIcon 3s ease-in-out infinite;}
   @keyframes floatIcon{0%,100%{transform:translateY(0);}50%{transform:translateY(-5px);}}
   .credits p{font-size:0.7rem;color:var(--muted);letter-spacing:0.06em;line-height:2.2;}
-  .credits .brand{background:linear-gradient(90deg,var(--purple),var(--purple2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;font-weight:700;}
+  .credits .brand{background:linear-gradient(90deg,var(--green),var(--green-dim));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;font-weight:700;}
 </style>
 </head>
 <body>
 <div class="orb1"></div><div class="orb2"></div>
 <div class="container">
 
-  <!-- HEADER -->
   <header>
     <div class="logo-wrap">
+      <div class="logo-glow"></div>
       <div class="logo-ring"></div>
       <div class="logo-inner">
         <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <rect x="2" y="7" width="28" height="18" rx="3" fill="#1a0030" stroke="#9b30ff" stroke-width="1.2"/>
-          <rect x="5" y="10" width="22" height="9" rx="1.5" fill="#0d0010"/>
-          <circle cx="11" cy="21" r="3" fill="#0d0010" stroke="#9b30ff" stroke-width="1"/>
-          <circle cx="21" cy="21" r="3" fill="#0d0010" stroke="#9b30ff" stroke-width="1"/>
-          <circle cx="11" cy="21" r="1.2" fill="#c084fc"/>
-          <circle cx="21" cy="21" r="1.2" fill="#c084fc"/>
-          <rect x="13" y="20" width="6" height="2" rx="0.5" fill="#9b30ff" opacity="0.5"/>
-          <line x1="8" y1="14" x2="24" y2="14" stroke="#9b30ff" stroke-width="0.8" opacity="0.5"/>
-          <circle cx="16" cy="13" r="1" fill="#c084fc" opacity="0.9"/>
+          <rect x="2" y="7" width="28" height="18" rx="3" fill="#111" stroke="#1DB954" stroke-width="1.2"/>
+          <rect x="5" y="10" width="22" height="9" rx="1.5" fill="#0a0a0a"/>
+          <circle cx="11" cy="21" r="3" fill="#0a0a0a" stroke="#1DB954" stroke-width="1"/>
+          <circle cx="21" cy="21" r="3" fill="#0a0a0a" stroke="#1DB954" stroke-width="1"/>
+          <circle cx="11" cy="21" r="1.2" fill="#1DB954"/>
+          <circle cx="21" cy="21" r="1.2" fill="#1DB954"/>
+          <rect x="13" y="20" width="6" height="2" rx="0.5" fill="#1DB954" opacity="0.5"/>
+          <line x1="8" y1="14" x2="24" y2="14" stroke="#1DB954" stroke-width="0.8" opacity="0.5"/>
+          <circle cx="16" cy="13" r="1" fill="#1DB954" opacity="0.9"/>
         </svg>
       </div>
     </div>
     <div class="header-text">
-      <h1><span class="grad">VHS Streaming</span> – Spotify Tools</h1>
+      <h1><span class="grad">VHS Streaming</span> <span class="plain">– Spotify Tools</span></h1>
       <p>MUSIC ACCOUNT MANAGER</p>
     </div>
-    <span class="version-tag">v2.1</span>
+    <span class="version-tag">v2.2</span>
   </header>
 
-  <!-- HERO -->
   <div class="hero">
     <h2>Gestiona tus<br>cuentas <em>Spotify</em><br>en segundos.</h2>
     <p>Transferí canciones entre cuentas o limpiá una biblioteca completa con un solo clic. Sin tokens manuales.</p>
   </div>
 
-  <!-- AUTH BAR -->
   <div class="auth-section" id="authSection">
     <div class="auth-left">
       <div class="auth-avatar-placeholder" id="authAvatarPlaceholder">🎵</div>
@@ -217,21 +222,15 @@
         <p id="authSubtext">Conectá una cuenta usando los botones de abajo para comenzar</p>
       </div>
     </div>
-    <div class="auth-right">
-      <button class="btn btn-ghost" onclick="disconnectAll()" id="disconnectBtn" style="display:none;">✕ Desconectar todo</button>
-    </div>
+    <button class="btn btn-ghost" onclick="disconnectAll()" id="disconnectBtn" style="display:none;">✕ Desconectar todo</button>
   </div>
 
-  <!-- TOOLS GRID -->
   <div class="tools-grid">
-
-    <!-- TRANSFER CARD -->
     <div class="tool-card">
       <span class="tool-number">01 /</span>
-      <div class="tool-icon purple">🔄</div>
+      <div class="tool-icon green">🔄</div>
       <h3>Transferir canciones</h3>
-      <p>Conectá la cuenta vieja para ver su contenido, luego conectá la nueva y transferí.</p>
-
+      <p>Conectá la cuenta vieja, revisá el contenido, conectá la nueva y transferí.</p>
       <div style="margin-bottom:14px;">
         <span class="connect-label">CUENTA ORIGEN (cuenta vieja)</span>
         <button class="btn btn-outline" onclick="connectSource()" id="sourceBtn" style="width:100%;justify-content:center;">Conectar cuenta origen</button>
@@ -244,7 +243,6 @@
           <button class="pb-disconnect" onclick="disconnectRole('source')">✕ Desconectar</button>
         </div>
       </div>
-
       <div style="margin-bottom:18px;">
         <span class="connect-label">CUENTA DESTINO (cuenta nueva)</span>
         <button class="btn btn-outline" onclick="connectDest()" id="destBtn" style="width:100%;justify-content:center;">Conectar cuenta destino</button>
@@ -257,11 +255,9 @@
           <button class="pb-disconnect" onclick="disconnectRole('dest')">✕ Desconectar</button>
         </div>
       </div>
-
-      <button class="btn btn-purple" onclick="startTransfer()" id="transferBtn" style="width:100%;justify-content:center;" disabled>Iniciar transferencia →</button>
+      <button class="btn btn-green" onclick="startFullTransfer()" id="transferBtn" style="width:100%;justify-content:center;" disabled>Iniciar transferencia completa →</button>
     </div>
 
-    <!-- DELETE CARD -->
     <div class="tool-card danger">
       <span class="tool-number">02 /</span>
       <div class="tool-icon red">🗑️</div>
@@ -288,15 +284,12 @@
       </div>
       <button class="btn btn-red" onclick="showDeleteModal()" id="deleteBtn" style="width:100%;justify-content:center;" disabled>Eliminar todo →</button>
     </div>
-
   </div>
 
   <!-- CONTENT BROWSER -->
   <div class="content-browser" id="contentBrowser">
     <div class="cb-header">
-      <div class="cb-header-top">
-        <h4>📂 Contenido de la cuenta origen</h4>
-      </div>
+      <div class="cb-header-top"><h4>📂 Contenido de la cuenta origen</h4></div>
       <div class="cb-tabs">
         <button class="cb-tab active" onclick="switchTab('playlists')" id="tab-playlists">📂 Playlists <span class="cb-count" id="tc-playlists">0</span></button>
         <button class="cb-tab" onclick="switchTab('tracks')" id="tab-tracks">🎵 Tracks <span class="cb-count" id="tc-tracks">0</span></button>
@@ -306,16 +299,14 @@
       </div>
     </div>
     <div class="cb-actions">
-      <button class="btn btn-green" onclick="transferSelected()" id="transferSelectedBtn" style="font-size:0.7rem;padding:7px 14px;" disabled>↗ Transferir seleccionados</button>
-      <button class="btn btn-outline" onclick="transferAll()" id="transferAllBtn" style="font-size:0.7rem;padding:7px 14px;" disabled>↗ Transferir todo</button>
+      <button class="btn btn-green" onclick="transferSelected()" id="btnTransferSel" style="font-size:0.7rem;padding:7px 14px;" disabled>↗ Transferir seleccionados</button>
+      <button class="btn btn-outline" onclick="transferCurrentTab()" id="btnTransferTab" style="font-size:0.7rem;padding:7px 14px;" disabled>↗ <span id="btnTabLabel">Transferir playlists</span></button>
+      <button class="btn btn-outline" onclick="startFullTransfer()" id="btnTransferAll" style="font-size:0.7rem;padding:7px 14px;" disabled>↗ Transferir todo</button>
       <span class="cb-sel-info" id="selInfo">Seleccionados: 0</span>
     </div>
     <div class="cb-table-wrap">
       <div class="cb-loading" id="cbLoading"><div class="spinner"></div> Cargando contenido...</div>
-      <table class="cb-table" id="cbTable" style="display:none;">
-        <thead id="cbThead"></thead>
-        <tbody id="cbTbody"></tbody>
-      </table>
+      <table class="cb-table" id="cbTable" style="display:none;"><thead id="cbThead"></thead><tbody id="cbTbody"></tbody></table>
     </div>
     <div class="cb-pagination" id="cbPagination" style="display:none;">
       <span class="cb-page-info" id="cbPageInfo"></span>
@@ -326,7 +317,6 @@
     </div>
   </div>
 
-  <!-- LOG PANEL -->
   <div class="log-panel" id="logPanel">
     <div class="log-header">
       <h4 id="logTitle">📋 Log de operación</h4>
@@ -339,16 +329,13 @@
     <div class="log-body" id="logBody"></div>
   </div>
 
-  <!-- CREDITS -->
   <div class="credits">
     <span class="credits-icon">📼</span>
     <p>Made by <span class="brand">Neft</span>, VHS Streaming.<br>
     <span style="font-size:0.6rem;opacity:0.45;">© 2026 · Todos los derechos reservados</span></p>
   </div>
-
 </div>
 
-<!-- DELETE MODAL -->
 <div class="modal-overlay" id="deleteModal">
   <div class="modal">
     <div class="modal-icon">⚠️</div>
@@ -367,18 +354,21 @@ const CLIENT_ID    = '7d67e91f4b3e43a9989cf9da41af18a8';
 const REDIRECT_URI = 'https://theneft.github.io/VHS-Streaming-Tools';
 const SCOPES = ['user-library-read','user-library-modify','playlist-read-private','playlist-read-collaborative','playlist-modify-public','playlist-modify-private','user-follow-read','user-follow-modify'].join(' ');
 const PAGE_SIZE = 10;
+const TAB_LABELS = {playlists:'playlists',tracks:'canciones',albums:'álbumes',artists:'artistas',episodes:'podcasts'};
 
 let tokens = {source:localStorage.getItem('tok_src')||null,dest:localStorage.getItem('tok_dst')||null,delete:localStorage.getItem('tok_del')||null};
-let users  = {source:JSON.parse(localStorage.getItem('usr_src')||'null'),dest:JSON.parse(localStorage.getItem('usr_dst')||'null'),delete:JSON.parse(localStorage.getItem('usr_del')||'null')};
+let users  = {source:tryParse(localStorage.getItem('usr_src')),dest:tryParse(localStorage.getItem('usr_dst')),delete:tryParse(localStorage.getItem('usr_del'))};
 let srcContent = {tracks:[],albums:[],artists:[],playlists:[],episodes:[]};
 let currentTab = 'playlists';
 let currentPage = 0;
 let selectedItems = new Set();
 let allSelected = false;
 
-window.onload = () => { handleCallback(); restoreUI(); };
+function tryParse(s){try{return s?JSON.parse(s):null;}catch{return null;}}
 
-// ── PKCE ─────────────────────────────────────────
+window.onload = ()=>{ handleCallback(); restoreUI(); };
+
+// ── PKCE ──────────────────────────────────────────
 async function genVer(){const a=new Uint8Array(64);crypto.getRandomValues(a);return btoa(String.fromCharCode(...a)).replace(/\+/g,'-').replace(/\//g,'_').replace(/=/g,'');}
 async function genChal(v){const d=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(v));return btoa(String.fromCharCode(...new Uint8Array(d))).replace(/\+/g,'-').replace(/\//g,'_').replace(/=/g,'');}
 
@@ -396,38 +386,34 @@ async function handleCallback(){
   if(!v||!role)return;
   const res=await fetch('https://accounts.spotify.com/api/token',{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded'},body:new URLSearchParams({grant_type:'authorization_code',code,redirect_uri:REDIRECT_URI,client_id:CLIENT_ID,code_verifier:v})});
   const data=await res.json();
+  localStorage.removeItem('pkce_v');localStorage.removeItem('pkce_r');
   if(data.access_token){
-    const key=role==='source'?'tok_src':role==='dest'?'tok_dst':'tok_del';
-    tokens[role]=data.access_token;localStorage.setItem(key,data.access_token);
-    localStorage.removeItem('pkce_v');localStorage.removeItem('pkce_r');
+    const tk=role==='source'?'tok_src':role==='dest'?'tok_dst':'tok_del';
+    tokens[role]=data.access_token;localStorage.setItem(tk,data.access_token);
     await fetchProfile(role);
-  }
+  } else { console.error('Token error',data); }
 }
 
 async function fetchProfile(role){
   const r=await spGet('https://api.spotify.com/v1/me',tokens[role]);
-  if(!r)return;
+  if(!r){console.error('Profile fetch failed for',role);return;}
   users[role]=r;
   const uk=role==='source'?'usr_src':role==='dest'?'usr_dst':'usr_del';
   localStorage.setItem(uk,JSON.stringify(r));
   applyBadge(role,r);
   updateAuthBar();
-  checkTransferReady();
+  checkReady();
   if(role==='source'){showBrowser();await loadContent();}
 }
 
 function applyBadge(role,u){
   const name=u.display_name||u.id,img=u.images?.[0]?.url||'';
-  const pfx=role==='source'?'source':role==='dest'?'dest':'delete';
+  const pfx=role==='delete'?'delete':role;
   document.getElementById(pfx+'Btn').style.display='none';
   document.getElementById(pfx+'Badge').classList.add('visible');
   document.getElementById(pfx+'UserName').textContent=name;
-  if(img){
-    const i=document.getElementById(pfx+'AvatarImg');
-    i.src=img;i.style.display='block';
-    document.getElementById(pfx+'AvatarPlaceholder').style.display='none';
-  }
-  if(role==='delete') document.getElementById('deleteBtn').disabled=false;
+  if(img){const i=document.getElementById(pfx+'AvatarImg');i.src=img;i.style.display='block';document.getElementById(pfx+'AvatarPlaceholder').style.display='none';}
+  if(role==='delete')document.getElementById('deleteBtn').disabled=false;
 }
 
 function updateAuthBar(){
@@ -447,7 +433,7 @@ function restoreUI(){
   if(users.delete)applyBadge('delete',users.delete);
   if(users.source||users.dest||users.delete)updateAuthBar();
   if(users.source&&tokens.source){showBrowser();loadContent();}
-  checkTransferReady();
+  checkReady();
 }
 
 function disconnectAll(){['source','dest','delete'].forEach(r=>disconnectRole(r,true));location.reload();}
@@ -457,32 +443,42 @@ function disconnectRole(role,silent=false){
   const uk=role==='source'?'usr_src':role==='dest'?'usr_dst':'usr_del';
   tokens[role]=null;users[role]=null;
   localStorage.removeItem(tk);localStorage.removeItem(uk);
-  const pfx=role==='source'?'source':role==='dest'?'dest':'delete';
+  const pfx=role==='delete'?'delete':role;
   document.getElementById(pfx+'Btn').style.display='';
   document.getElementById(pfx+'Badge').classList.remove('visible');
-  document.getElementById(pfx+'AvatarImg').style.display='none';
-  document.getElementById(pfx+'AvatarPlaceholder').style.display='flex';
+  const ai=document.getElementById(pfx+'AvatarImg');if(ai){ai.style.display='none';}
+  const ap=document.getElementById(pfx+'AvatarPlaceholder');if(ap){ap.style.display='flex';}
   document.getElementById(pfx+'UserName').textContent='';
   if(role==='delete')document.getElementById('deleteBtn').disabled=true;
   if(role==='source'){srcContent={tracks:[],albums:[],artists:[],playlists:[],episodes:[]};document.getElementById('contentBrowser').classList.remove('visible');}
-  if(!silent){checkTransferReady();if(!users.source&&!users.dest&&!users.delete){document.getElementById('statusDot').classList.remove('active');document.getElementById('statusText').textContent='Sin conectar';document.getElementById('authSubtext').textContent='Conectá una cuenta usando los botones de abajo para comenzar';document.getElementById('authSection').classList.remove('connected');document.getElementById('disconnectBtn').style.display='none';document.getElementById('authAvatar').classList.remove('visible');document.getElementById('authAvatarPlaceholder').style.display='flex';}}
+  if(!silent)checkReady();
 }
 
 function connectSource(){startOAuth('source');}
 function connectDest(){startOAuth('dest');}
 function connectDelete(){startOAuth('delete');}
-function checkTransferReady(){document.getElementById('transferBtn').disabled=!(tokens.source&&tokens.dest);}
+
+function checkReady(){
+  const ok=!!(tokens.source&&tokens.dest);
+  document.getElementById('transferBtn').disabled=!ok;
+  document.getElementById('btnTransferAll').disabled=!ok;
+  updateCbBtns();
+}
 
 // ── SPOTIFY HELPERS ───────────────────────────────
 async function spGet(url,token){
   const r=await fetch(url,{headers:{Authorization:'Bearer '+token}});
   if(r.status===429){await sleep(parseInt(r.headers.get('Retry-After')||'3')*1000);return spGet(url,token);}
-  if(!r.ok)return null;
+  if(!r.ok){console.error('spGet failed',r.status,url);return null;}
   return r.json();
 }
 async function spAll(url,token,key='items'){
   let items=[];
-  while(url){const d=await spGet(url,token);if(!d)break;if(key==='artists'){items.push(...(d.artists?.items||[]));url=d.artists?.next;}else{items.push(...(d.items||[]));url=d.next;}}
+  while(url){
+    const d=await spGet(url,token);if(!d)break;
+    if(key==='artists'){items.push(...(d.artists?.items||[]));url=d.artists?.next;}
+    else{items.push(...(d.items||[]));url=d.next;}
+  }
   return items;
 }
 async function spReq(method,url,token,body=null){
@@ -491,6 +487,7 @@ async function spReq(method,url,token,body=null){
     if(body)opts.body=JSON.stringify(body);
     const r=await fetch(url,opts);
     if(r.status===429){await sleep(parseInt(r.headers.get('Retry-After')||'3')*1000);continue;}
+    if(r.status>=400){const t=await r.text();console.error('spReq error',r.status,url,t);}
     return r;
   }
 }
@@ -504,6 +501,7 @@ async function loadContent(){
   document.getElementById('cbTable').style.display='none';
   document.getElementById('cbPagination').style.display='none';
   const token=tokens.source;
+  if(!token)return;
   const [tracks,albums,artists,playlists,episodes]=await Promise.all([
     spAll('https://api.spotify.com/v1/me/tracks?limit=50',token),
     spAll('https://api.spotify.com/v1/me/albums?limit=50',token),
@@ -518,29 +516,26 @@ async function loadContent(){
   document.getElementById('tc-playlists').textContent=playlists.length;
   document.getElementById('tc-episodes').textContent=episodes.length;
   document.getElementById('cbLoading').style.display='none';
-  updateTransferBtns();
   renderTable();
+  updateCbBtns();
 }
 
 function switchTab(tab){
   currentTab=tab;currentPage=0;selectedItems.clear();allSelected=false;
   document.querySelectorAll('.cb-tab').forEach(t=>t.classList.remove('active'));
   document.getElementById('tab-'+tab).classList.add('active');
+  document.getElementById('btnTabLabel').textContent='Transferir '+TAB_LABELS[tab];
   renderTable();
 }
 
-function getTabData(){
-  return srcContent[currentTab]||[];
-}
+function getTabData(){return srcContent[currentTab]||[];}
 
 function renderTable(){
-  const data=getTabData();
-  const total=data.length;
+  const data=getTabData(),total=data.length;
   const totalPages=Math.max(1,Math.ceil(total/PAGE_SIZE));
   const start=currentPage*PAGE_SIZE;
   const page=data.slice(start,start+PAGE_SIZE);
 
-  // Headers
   let hdr=`<tr><th><input type="checkbox" id="cbCheckAll" onchange="toggleAll(this)" style="accent-color:var(--green);width:14px;height:14px;" ${allSelected?'checked':''}></th><th>#</th>`;
   if(currentTab==='playlists') hdr+='<th>Nombre</th><th>Tracks</th><th>Público</th><th>Owner</th>';
   else if(currentTab==='tracks') hdr+='<th>Canción</th><th>Artista</th><th>Álbum</th>';
@@ -550,36 +545,35 @@ function renderTable(){
   hdr+='</tr>';
   document.getElementById('cbThead').innerHTML=hdr;
 
-  // Rows
   let rows='';
   page.forEach((item,i)=>{
     const gi=start+i,chk=selectedItems.has(gi)?'checked':'';
     rows+=`<tr><td><input type="checkbox" ${chk} onchange="toggleItem(${gi},this)" style="accent-color:var(--green);width:14px;height:14px;"></td><td class="cb-num">${gi+1}.</td>`;
     if(currentTab==='playlists'){
       const img=item.images?.[0]?.url||'';
-      rows+=`<td><div style="display:flex;align-items:center;gap:8px;">${img?`<img src="${img}" class="cb-img">`:'<div class="cb-img" style="background:#222;"></div>'}<span class="cb-name">${esc(item.name)}</span></div></td>`;
+      rows+=`<td><div style="display:flex;align-items:center;gap:8px;">${img?`<img src="${img}" class="cb-img" loading="lazy">`:'<div class="cb-img" style="background:#222;"></div>'}<span class="cb-name">${esc(item.name||'—')}</span></div></td>`;
       rows+=`<td class="cb-sub">${item.tracks?.total??0}</td>`;
       rows+=`<td>${item.public?'<span class="cb-badge">✓ Sí</span>':'<span class="cb-badge no">✕ No</span>'}</td>`;
       rows+=`<td class="cb-sub">${esc(item.owner?.display_name||item.owner?.id||'—')}</td>`;
     } else if(currentTab==='tracks'){
-      const t=item.track,img=t?.album?.images?.[0]?.url||'';
-      rows+=`<td><div style="display:flex;align-items:center;gap:8px;">${img?`<img src="${img}" class="cb-img">`:'<div class="cb-img" style="background:#222;"></div>'}<span class="cb-name">${esc(t?.name||'—')}</span></div></td>`;
-      rows+=`<td class="cb-sub">${esc(t?.artists?.map(a=>a.name).join(', ')||'—')}</td>`;
-      rows+=`<td class="cb-sub">${esc(t?.album?.name||'—')}</td>`;
+      const t=item.track||{},img=t.album?.images?.[0]?.url||'';
+      rows+=`<td><div style="display:flex;align-items:center;gap:8px;">${img?`<img src="${img}" class="cb-img" loading="lazy">`:'<div class="cb-img" style="background:#222;"></div>'}<span class="cb-name">${esc(t.name||'—')}</span></div></td>`;
+      rows+=`<td class="cb-sub">${esc((t.artists||[]).map(a=>a.name).join(', ')||'—')}</td>`;
+      rows+=`<td class="cb-sub">${esc(t.album?.name||'—')}</td>`;
     } else if(currentTab==='albums'){
-      const a=item.album,img=a?.images?.[0]?.url||'';
-      rows+=`<td><div style="display:flex;align-items:center;gap:8px;">${img?`<img src="${img}" class="cb-img">`:'<div class="cb-img" style="background:#222;"></div>'}<span class="cb-name">${esc(a?.name||'—')}</span></div></td>`;
-      rows+=`<td class="cb-sub">${esc(a?.artists?.map(x=>x.name).join(', ')||'—')}</td>`;
-      rows+=`<td class="cb-sub">${a?.release_date?.substring(0,4)||'—'}</td>`;
+      const a=item.album||{},img=a.images?.[0]?.url||'';
+      rows+=`<td><div style="display:flex;align-items:center;gap:8px;">${img?`<img src="${img}" class="cb-img" loading="lazy">`:'<div class="cb-img" style="background:#222;"></div>'}<span class="cb-name">${esc(a.name||'—')}</span></div></td>`;
+      rows+=`<td class="cb-sub">${esc((a.artists||[]).map(x=>x.name).join(', ')||'—')}</td>`;
+      rows+=`<td class="cb-sub">${a.release_date?.substring(0,4)||'—'}</td>`;
     } else if(currentTab==='artists'){
       const img=item.images?.[0]?.url||'';
-      rows+=`<td><div style="display:flex;align-items:center;gap:8px;">${img?`<img src="${img}" class="cb-img round">`:'<div class="cb-img round" style="background:#222;"></div>'}<span class="cb-name">${esc(item.name||'—')}</span></div></td>`;
+      rows+=`<td><div style="display:flex;align-items:center;gap:8px;">${img?`<img src="${img}" class="cb-img round" loading="lazy">`:'<div class="cb-img round" style="background:#222;"></div>'}<span class="cb-name">${esc(item.name||'—')}</span></div></td>`;
       rows+=`<td class="cb-sub">${esc((item.genres||[]).slice(0,3).join(', ')||'—')}</td>`;
     } else if(currentTab==='episodes'){
-      const e=item.episode,img=e?.images?.[0]?.url||e?.show?.images?.[0]?.url||'';
-      rows+=`<td><div style="display:flex;align-items:center;gap:8px;">${img?`<img src="${img}" class="cb-img">`:'<div class="cb-img" style="background:#222;"></div>'}<span class="cb-name">${esc(e?.name||'—')}</span></div></td>`;
-      rows+=`<td class="cb-sub">${esc(e?.show?.name||'—')}</td>`;
-      rows+=`<td class="cb-sub">${e?.release_date||'—'}</td>`;
+      const e=item.episode||{},img=e.images?.[0]?.url||e.show?.images?.[0]?.url||'';
+      rows+=`<td><div style="display:flex;align-items:center;gap:8px;">${img?`<img src="${img}" class="cb-img" loading="lazy">`:'<div class="cb-img" style="background:#222;"></div>'}<span class="cb-name">${esc(e.name||'—')}</span></div></td>`;
+      rows+=`<td class="cb-sub">${esc(e.show?.name||'—')}</td>`;
+      rows+=`<td class="cb-sub">${e.release_date||'—'}</td>`;
     }
     rows+='</tr>';
   });
@@ -590,165 +584,176 @@ function renderTable(){
   document.getElementById('cbPageInfo').textContent=`Página ${currentPage+1} de ${totalPages}  (${total} total)`;
   document.getElementById('btnPrev').disabled=currentPage===0;
   document.getElementById('btnNext').disabled=currentPage>=totalPages-1;
-  updateSelInfo();
-  updateTransferBtns();
+  updateSelInfo();updateCbBtns();
 }
 
-function esc(s){const d=document.createElement('div');d.textContent=s;return d.innerHTML;}
+function esc(s){const d=document.createElement('div');d.textContent=String(s);return d.innerHTML;}
 
 function toggleAll(cb){
   const data=getTabData();
-  if(cb.checked){
-    // Select all across all pages
-    data.forEach((_,i)=>selectedItems.add(i));
-    allSelected=true;
-  } else {
-    selectedItems.clear();
-    allSelected=false;
-  }
+  if(cb.checked){data.forEach((_,i)=>selectedItems.add(i));allSelected=true;}
+  else{selectedItems.clear();allSelected=false;}
   renderTable();
 }
 
 function toggleItem(idx,cb){
   cb.checked?selectedItems.add(idx):selectedItems.delete(idx);
   if(!cb.checked)allSelected=false;
-  updateSelInfo();updateTransferBtns();
+  updateSelInfo();updateCbBtns();
 }
 
 function updateSelInfo(){document.getElementById('selInfo').textContent=`Seleccionados: ${selectedItems.size}`;}
 
-function updateTransferBtns(){
+function updateCbBtns(){
   const hasDest=!!tokens.dest;
-  document.getElementById('transferSelectedBtn').disabled=!hasDest||selectedItems.size===0;
-  document.getElementById('transferAllBtn').disabled=!hasDest||getTabData().length===0;
+  const hasData=getTabData().length>0;
+  document.getElementById('btnTransferSel').disabled=!hasDest||selectedItems.size===0;
+  document.getElementById('btnTransferTab').disabled=!hasDest||!hasData;
+  document.getElementById('btnTransferAll').disabled=!(tokens.source&&tokens.dest);
 }
 
 function changePage(dir){currentPage+=dir;renderTable();}
 
-// ── TRANSFER SELECTED ─────────────────────────────
-async function transferAll(){
-  const data=getTabData();
-  data.forEach((_,i)=>selectedItems.add(i));
-  await doTransferItems(data,'todo');
+// ── TRANSFER HELPERS ──────────────────────────────
+async function pushTracks(ids,dstToken){
+  for(let i=0;i<ids.length;i+=50){
+    const batch=ids.slice(i,i+50);
+    const r=await spReq('PUT','https://api.spotify.com/v1/me/tracks',dstToken,{ids:batch});
+    console.log('tracks PUT',r.status,batch.length,'items');
+    setProgress((i/ids.length)*100,`${Math.min(i+50,ids.length)}/${ids.length}`);
+    await sleep(400);
+  }
+}
+async function pushAlbums(ids,dstToken){
+  for(let i=0;i<ids.length;i+=20){
+    const batch=ids.slice(i,i+20);
+    const r=await spReq('PUT','https://api.spotify.com/v1/me/albums',dstToken,{ids:batch});
+    console.log('albums PUT',r.status,batch.length,'items');
+    setProgress((i/ids.length)*100,`${Math.min(i+20,ids.length)}/${ids.length}`);
+    await sleep(400);
+  }
+}
+async function pushArtists(ids,dstToken){
+  for(let i=0;i<ids.length;i+=50){
+    const batch=ids.slice(i,i+50).join(',');
+    const r=await spReq('PUT',`https://api.spotify.com/v1/me/following?type=artist&ids=${batch}`,dstToken);
+    console.log('artists PUT',r.status);
+    setProgress((i/ids.length)*100,`${Math.min(i+50,ids.length)}/${ids.length}`);
+    await sleep(400);
+  }
+}
+async function pushPlaylists(playlists,srcToken,dstToken,dstUserId){
+  const own=playlists.filter(p=>p.owner?.id===users.source?.id);
+  for(let idx=0;idx<own.length;idx++){
+    const pl=own[idx];
+    const res=await spReq('POST',`https://api.spotify.com/v1/users/${dstUserId}/playlists`,dstToken,{name:pl.name,description:pl.description||'',public:pl.public??false});
+    const newPl=await res.json();
+    if(newPl.id){
+      const plTracks=await spAll(`https://api.spotify.com/v1/playlists/${pl.id}/tracks?limit=100`,srcToken);
+      for(let i=0;i<plTracks.length;i+=100){
+        const uris=plTracks.slice(i,i+100).map(t=>t.track?.uri).filter(Boolean);
+        if(uris.length){const r=await spReq('POST',`https://api.spotify.com/v1/playlists/${newPl.id}/tracks`,dstToken,{uris});console.log('playlist tracks POST',r.status);}
+        await sleep(400);
+      }
+      log(`✓ "${esc(pl.name)}" (${plTracks.length} canciones)`,'success');
+    }
+    setProgress(((idx+1)/own.length)*100,`${idx+1}/${own.length}`);
+  }
+}
+async function pushEpisodes(ids,dstToken){
+  for(let i=0;i<ids.length;i+=50){
+    const batch=ids.slice(i,i+50);
+    const r=await spReq('PUT','https://api.spotify.com/v1/me/episodes',dstToken,{ids:batch});
+    console.log('episodes PUT',r.status,batch.length,'items');
+    setProgress((i/ids.length)*100,`${Math.min(i+50,ids.length)}/${ids.length}`);
+    await sleep(400);
+  }
 }
 
+// ── TRANSFER SELECTED ─────────────────────────────
 async function transferSelected(){
+  if(!tokens.dest){alert('Conectá la cuenta destino primero.');return;}
   const data=getTabData();
   const items=[...selectedItems].sort((a,b)=>a-b).map(i=>data[i]).filter(Boolean);
   if(!items.length)return;
-  await doTransferItems(items,'seleccionados');
-}
-
-async function doTransferItems(items,label){
-  if(!tokens.source||!tokens.dest){alert('Conectá ambas cuentas primero.');return;}
-  document.getElementById('transferSelectedBtn').disabled=true;
-  document.getElementById('transferAllBtn').disabled=true;
-  showLog(`Transfiriendo ${items.length} ${currentTab} (${label})...`);
+  disableTransferBtns(true);
+  showLog(`Transfiriendo ${items.length} ${TAB_LABELS[currentTab]}...`);
   const dst=tokens.dest;
   try{
-    let done=0;
-    if(currentTab==='tracks'){
-      const ids=items.map(t=>t.track?.id).filter(Boolean);
-      for(let i=0;i<ids.length;i+=50){
-        await spReq('PUT','https://api.spotify.com/v1/me/tracks',dst,{ids:ids.slice(i,i+50)});
-        done=Math.min(i+50,ids.length);setProgress((done/ids.length)*100,`${done}/${ids.length}`);await sleep(300);
-      }
-    } else if(currentTab==='albums'){
-      const ids=items.map(a=>a.album?.id).filter(Boolean);
-      for(let i=0;i<ids.length;i+=20){
-        await spReq('PUT','https://api.spotify.com/v1/me/albums',dst,{ids:ids.slice(i,i+20)});
-        done=Math.min(i+20,ids.length);setProgress((done/ids.length)*100,`${done}/${ids.length}`);await sleep(300);
-      }
-    } else if(currentTab==='artists'){
-      const ids=items.map(a=>a.id).filter(Boolean);
-      for(let i=0;i<ids.length;i+=50){
-        await spReq('PUT',`https://api.spotify.com/v1/me/following?type=artist&ids=${ids.slice(i,i+50).join(',')}`,dst);
-        done=Math.min(i+50,ids.length);setProgress((done/ids.length)*100,`${done}/${ids.length}`);await sleep(300);
-      }
-    } else if(currentTab==='playlists'){
-      for(let idx=0;idx<items.length;idx++){
-        const pl=items[idx];
-        const newPl=await(await spReq('POST',`https://api.spotify.com/v1/users/${users.dest?.id}/playlists`,dst,{name:pl.name,description:pl.description||'',public:pl.public??false})).json();
-        if(newPl.id){
-          const plTracks=await spAll(`https://api.spotify.com/v1/playlists/${pl.id}/tracks?limit=100`,tokens.source);
-          for(let i=0;i<plTracks.length;i+=100){
-            const uris=plTracks.slice(i,i+100).map(t=>t.track?.uri).filter(Boolean);
-            if(uris.length)await spReq('POST',`https://api.spotify.com/v1/playlists/${newPl.id}/tracks`,dst,{uris});
-            await sleep(300);
-          }
-          log(`✓ "${esc(pl.name)}" (${plTracks.length} canciones)`,'success');
-        }
-        setProgress(((idx+1)/items.length)*100,`Playlists: ${idx+1}/${items.length}`);
-      }
-    } else if(currentTab==='episodes'){
-      const ids=items.map(e=>e.episode?.id).filter(Boolean);
-      for(let i=0;i<ids.length;i+=50){
-        await spReq('PUT','https://api.spotify.com/v1/me/episodes',dst,{ids:ids.slice(i,i+50)});
-        done=Math.min(i+50,ids.length);setProgress((done/ids.length)*100,`${done}/${ids.length}`);await sleep(300);
-      }
-    }
+    if(currentTab==='tracks'){const ids=items.map(t=>t.track?.id).filter(Boolean);await pushTracks(ids,dst);}
+    else if(currentTab==='albums'){const ids=items.map(a=>a.album?.id).filter(Boolean);await pushAlbums(ids,dst);}
+    else if(currentTab==='artists'){const ids=items.map(a=>a.id).filter(Boolean);await pushArtists(ids,dst);}
+    else if(currentTab==='playlists'){await pushPlaylists(items,tokens.source,dst,users.dest?.id);}
+    else if(currentTab==='episodes'){const ids=items.map(e=>e.episode?.id).filter(Boolean);await pushEpisodes(ids,dst);}
     setProgress(100,'¡Completado!');
-    log(`🎉 ${items.length} ${currentTab} transferidos exitosamente`,'success');
-  }catch(e){log('❌ Error: '+e.message,'error');}
-  finishLog();
-  updateTransferBtns();
+    log(`🎉 ${items.length} ${TAB_LABELS[currentTab]} transferidos`,'success');
+  }catch(e){log('❌ Error: '+e.message,'error');console.error(e);}
+  finishLog();disableTransferBtns(false);
 }
 
-// ── TRANSFER ALL (full account) ───────────────────
-async function startTransfer(){
-  if(!tokens.source||!tokens.dest){alert('Conectá ambas cuentas primero.');return;}
-  document.getElementById('transferBtn').disabled=true;
-  showLog('Transferencia completa en progreso');
+// ── TRANSFER CURRENT TAB ──────────────────────────
+async function transferCurrentTab(){
+  if(!tokens.dest){alert('Conectá la cuenta destino primero.');return;}
+  const data=getTabData();
+  if(!data.length)return;
+  disableTransferBtns(true);
+  showLog(`Transfiriendo ${TAB_LABELS[currentTab]}...`);
   const dst=tokens.dest,src=tokens.source;
   try{
-    // Tracks
+    if(currentTab==='tracks'){await pushTracks(data.map(t=>t.track?.id).filter(Boolean),dst);}
+    else if(currentTab==='albums'){await pushAlbums(data.map(a=>a.album?.id).filter(Boolean),dst);}
+    else if(currentTab==='artists'){await pushArtists(data.map(a=>a.id).filter(Boolean),dst);}
+    else if(currentTab==='playlists'){await pushPlaylists(data,src,dst,users.dest?.id);}
+    else if(currentTab==='episodes'){await pushEpisodes(data.map(e=>e.episode?.id).filter(Boolean),dst);}
+    setProgress(100,'¡Completado!');
+    log(`🎉 Todos los ${TAB_LABELS[currentTab]} transferidos`,'success');
+  }catch(e){log('❌ Error: '+e.message,'error');console.error(e);}
+  finishLog();disableTransferBtns(false);
+}
+
+// ── FULL TRANSFER ─────────────────────────────────
+async function startFullTransfer(){
+  if(!tokens.source||!tokens.dest){alert('Conectá ambas cuentas primero.');return;}
+  disableTransferBtns(true);document.getElementById('transferBtn').disabled=true;
+  showLog('Transferencia completa en progreso');
+  const dst=tokens.dest,src=tokens.source;
+
+  // Load content if not loaded
+  if(!srcContent.tracks.length&&!srcContent.playlists.length){await loadContent();}
+
+  try{
     log('Transfiriendo canciones...','info');
-    const tracks=srcContent.tracks.length?srcContent.tracks:await spAll('https://api.spotify.com/v1/me/tracks?limit=50',src);
-    const tids=tracks.map(t=>t.track?.id).filter(Boolean);
-    for(let i=0;i<tids.length;i+=50){await spReq('PUT','https://api.spotify.com/v1/me/tracks',dst,{ids:tids.slice(i,i+50)});setProgress((i/Math.max(tids.length,1))*20,`Canciones: ${Math.min(i+50,tids.length)}/${tids.length}`);await sleep(300);}
-    log(`✓ ${tids.length} canciones`,'success');
+    const tids=srcContent.tracks.map(t=>t.track?.id).filter(Boolean);
+    await pushTracks(tids,dst);
+    log(`✓ ${tids.length} canciones`,'success');setProgress(20,'Canciones ✓');
 
-    // Albums
     log('Transfiriendo álbumes...','info');
-    const albums=srcContent.albums.length?srcContent.albums:await spAll('https://api.spotify.com/v1/me/albums?limit=50',src);
-    const aids=albums.map(a=>a.album?.id).filter(Boolean);
-    for(let i=0;i<aids.length;i+=20){await spReq('PUT','https://api.spotify.com/v1/me/albums',dst,{ids:aids.slice(i,i+20)});setProgress(20+(i/Math.max(aids.length,1))*15,`Álbumes: ${Math.min(i+20,aids.length)}/${aids.length}`);await sleep(300);}
-    log(`✓ ${aids.length} álbumes`,'success');
+    const aids=srcContent.albums.map(a=>a.album?.id).filter(Boolean);
+    await pushAlbums(aids,dst);
+    log(`✓ ${aids.length} álbumes`,'success');setProgress(40,'Álbumes ✓');
 
-    // Artists
     log('Transfiriendo artistas...','info');
-    const artists=srcContent.artists.length?srcContent.artists:await spAll('https://api.spotify.com/v1/me/following?type=artist&limit=50',src,'artists');
-    const arids=artists.map(a=>a.id).filter(Boolean);
-    for(let i=0;i<arids.length;i+=50){await spReq('PUT',`https://api.spotify.com/v1/me/following?type=artist&ids=${arids.slice(i,i+50).join(',')}`,dst);setProgress(35+(i/Math.max(arids.length,1))*15,`Artistas: ${Math.min(i+50,arids.length)}/${arids.length}`);await sleep(300);}
-    log(`✓ ${arids.length} artistas`,'success');
+    const arids=srcContent.artists.map(a=>a.id).filter(Boolean);
+    await pushArtists(arids,dst);
+    log(`✓ ${arids.length} artistas`,'success');setProgress(55,'Artistas ✓');
 
-    // Playlists (own only)
     log('Transfiriendo playlists...','info');
-    const pls=srcContent.playlists.length?srcContent.playlists:await spAll('https://api.spotify.com/v1/me/playlists?limit=50',src);
-    const myPls=pls.filter(p=>p.owner?.id===users.source?.id);
-    for(let idx=0;idx<myPls.length;idx++){
-      const pl=myPls[idx];
-      const newPl=await(await spReq('POST',`https://api.spotify.com/v1/users/${users.dest?.id}/playlists`,dst,{name:pl.name,description:pl.description||'',public:pl.public??false})).json();
-      if(newPl.id){
-        const plt=await spAll(`https://api.spotify.com/v1/playlists/${pl.id}/tracks?limit=100`,src);
-        for(let i=0;i<plt.length;i+=100){const uris=plt.slice(i,i+100).map(t=>t.track?.uri).filter(Boolean);if(uris.length)await spReq('POST',`https://api.spotify.com/v1/playlists/${newPl.id}/tracks`,dst,{uris});await sleep(300);}
-        log(`✓ "${esc(pl.name)}"`,'success');
-      }
-      setProgress(50+(idx/Math.max(myPls.length,1))*30,`Playlists: ${idx+1}/${myPls.length}`);
-    }
+    await pushPlaylists(srcContent.playlists,src,dst,users.dest?.id);
+    log(`✓ playlists`,'success');setProgress(80,'Playlists ✓');
 
-    // Episodes
     log('Transfiriendo episodios...','info');
-    const eps=srcContent.episodes.length?srcContent.episodes:await spAll('https://api.spotify.com/v1/me/episodes?limit=50',src);
-    const eids=eps.map(e=>e.episode?.id).filter(Boolean);
-    for(let i=0;i<eids.length;i+=50){await spReq('PUT','https://api.spotify.com/v1/me/episodes',dst,{ids:eids.slice(i,i+50)});setProgress(80+(i/Math.max(eids.length,1))*20,`Episodios: ${Math.min(i+50,eids.length)}/${eids.length}`);await sleep(300);}
+    const eids=srcContent.episodes.map(e=>e.episode?.id).filter(Boolean);
+    await pushEpisodes(eids,dst);
     log(`✓ ${eids.length} episodios`,'success');
 
-    setProgress(100,'¡Transferencia completa!');
-    log('🎉 ¡Todo transferido exitosamente!','success');
-  }catch(e){log('❌ Error: '+e.message,'error');}
-  finishLog();
-  document.getElementById('transferBtn').disabled=false;
+    setProgress(100,'¡Todo transferido!');
+    log('🎉 ¡Transferencia completa exitosamente!','success');
+  }catch(e){log('❌ Error: '+e.message,'error');console.error(e);}
+  finishLog();disableTransferBtns(false);document.getElementById('transferBtn').disabled=false;
+}
+
+function disableTransferBtns(dis){
+  ['btnTransferSel','btnTransferTab','btnTransferAll'].forEach(id=>document.getElementById(id).disabled=dis);
 }
 
 // ── LOG ───────────────────────────────────────────
@@ -768,7 +773,7 @@ function log(msg,type='info'){
   l.innerHTML=`<span class="log-time">${now}</span><span class="log-msg ${type}">${msg}</span>`;
   b.appendChild(l);b.scrollTop=b.scrollHeight;
 }
-function setProgress(pct,text){document.getElementById('progressFill').style.width=pct+'%';document.getElementById('progressText').textContent=text;}
+function setProgress(pct,text){document.getElementById('progressFill').style.width=Math.min(pct,100)+'%';document.getElementById('progressText').textContent=text;}
 function finishLog(){document.getElementById('logRunning').style.display='none';}
 
 // ── DELETE ────────────────────────────────────────
@@ -808,9 +813,8 @@ async function startDelete(){
 
     setProgress(100,'¡Biblioteca limpiada!');
     log('🎉 ¡Biblioteca limpiada exitosamente!','success');
-  }catch(e){log('❌ Error: '+e.message,'error');}
-  finishLog();
-  document.getElementById('deleteBtn').disabled=false;
+  }catch(e){log('❌ Error: '+e.message,'error');console.error(e);}
+  finishLog();document.getElementById('deleteBtn').disabled=false;
 }
 </script>
 </body>

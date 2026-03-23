@@ -205,7 +205,7 @@
       <h1><span class="grad">VHS Streaming</span> <span class="plain">– Spotify Tools</span></h1>
       <p>MUSIC ACCOUNT MANAGER</p>
     </div>
-    <span class="version-tag">v3.2</span>
+    <span class="version-tag">v3.3</span>
   </header>
 
   <div class="hero">
@@ -723,35 +723,62 @@ async function pushPlaylists(playlists, srcToken, dstToken) {
     if (!newPl?.id) { log(`❌ No ID recibido para "${esc(pl.name)}"`, 'error'); continue; }
     log(`✓ Playlist creada: "${esc(pl.name)}"`, 'success');
 
-    // Transfer cover image
+    // Transfer cover image - resize to avoid 413, skip on any error
     try {
       const imgRes = await spGet(`https://api.spotify.com/v1/playlists/${pl.id}/images`, srcToken);
-      if (imgRes && imgRes[0]?.url) {
+      if (Array.isArray(imgRes) && imgRes[0]?.url) {
         const imgFetch = await fetch(imgRes[0].url);
         if (imgFetch.ok) {
           const blob = await imgFetch.blob();
-          const uploadRes = await spReq('PUT', `https://api.spotify.com/v1/playlists/${newPl.id}/images`, dstToken, null, blob);
+          // Resize image using canvas to keep under 256KB limit
+          const resizedBlob = await resizeImageBlob(blob, 300, 300, 0.7);
+          const uploadRes = await spReq('PUT', `https://api.spotify.com/v1/playlists/${newPl.id}/images`, dstToken, null, resizedBlob);
           if (uploadRes.ok) { log('✓ Cover image transferida', 'success'); }
-          else { log(`⚠ Falló subida de cover - status: ${uploadRes.status}`, 'info'); }
+          else { log(`⚠ Cover omitida (status ${uploadRes.status})`, 'info'); }
         }
       }
-    } catch (e) { log(`⚠ Cover image omitida: ${e.message}`, 'info'); console.warn(e); }
+    } catch (e) { log('⚠ Cover image omitida', 'info'); console.warn('Cover skipped:', e.message); }
 
-    // Transfer tracks
-    const plTracks = await spAll(`https://api.spotify.com/v1/playlists/${pl.id}/tracks?limit=100`, srcToken);
-    let addedCount = 0;
-    for (let i = 0; i < plTracks.length; i += 100) {
-      const uris = plTracks.slice(i, i + 100).map(t => t.track?.uri).filter(Boolean);
-      if (uris.length) {
-        const addRes = await spReq('POST', `https://api.spotify.com/v1/playlists/${newPl.id}/tracks`, dstToken, { uris });
-        if (addRes.ok) addedCount += uris.length;
-        else { const err = await addRes.text(); log(`⚠ Falló batch de tracks: ${err}`, 'error'); }
-        await sleep(600);
+    // Transfer tracks - use srcToken for reading, handle 403 gracefully
+    try {
+      const plTracks = await spAll(`https://api.spotify.com/v1/playlists/${pl.id}/tracks?limit=100`, srcToken);
+      let addedCount = 0;
+      for (let i = 0; i < plTracks.length; i += 100) {
+        const uris = plTracks.slice(i, i + 100).map(t => t.track?.uri).filter(Boolean);
+        if (uris.length) {
+          const addRes = await spReq('POST', `https://api.spotify.com/v1/playlists/${newPl.id}/tracks`, dstToken, { uris });
+          if (addRes.ok) addedCount += uris.length;
+          await sleep(600);
+        }
       }
+      log(`✓ "${esc(pl.name)}" — ${addedCount}/${plTracks.length} tracks`, 'success');
+    } catch(e) {
+      log(`⚠ No se pudieron leer tracks de "${esc(pl.name)}"`, 'info');
     }
-    log(`✓ "${esc(pl.name)}" — ${addedCount}/${plTracks.length} tracks`, 'success');
     setProgress(55 + ((idx + 1) / own.length) * 25, `Playlists: ${idx + 1}/${own.length}`);
   }
+}
+
+// Helper: resize image blob using canvas
+async function resizeImageBlob(blob, maxW, maxH, quality) {
+  return new Promise((resolve) => {
+    const img = new Image();
+    const url = URL.createObjectURL(blob);
+    img.onload = () => {
+      URL.revokeObjectURL(url);
+      const canvas = document.createElement('canvas');
+      let w = img.width, h = img.height;
+      if (w > maxW || h > maxH) {
+        const ratio = Math.min(maxW/w, maxH/h);
+        w = Math.round(w*ratio); h = Math.round(h*ratio);
+      }
+      canvas.width = w; canvas.height = h;
+      canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+      canvas.toBlob(resolve, 'image/jpeg', quality);
+    };
+    img.onerror = () => { URL.revokeObjectURL(url); resolve(blob); };
+    img.src = url;
+  });
 }
 async function pushEpisodes(ids, dstToken) {
   for (let i = 0; i < ids.length; i += 40) {

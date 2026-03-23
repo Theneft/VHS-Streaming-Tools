@@ -205,7 +205,7 @@
       <h1><span class="grad">VHS Streaming</span> <span class="plain">– Spotify Tools</span></h1>
       <p>MUSIC ACCOUNT MANAGER</p>
     </div>
-    <span class="version-tag">v2.8</span>
+    <span class="version-tag">v3.0</span>
   </header>
 
   <div class="hero">
@@ -366,7 +366,10 @@ let allSelected = false;
 
 function tryParse(s){try{return s?JSON.parse(s):null;}catch{return null;}}
 
-window.onload = ()=>{ handleCallback(); restoreUI(); };
+window.onload = async () => {
+  await handleCallback();
+  restoreUI();
+};
 
 // ── PKCE ──────────────────────────────────────────
 async function genVer(){const a=new Uint8Array(64);crypto.getRandomValues(a);return btoa(String.fromCharCode(...a)).replace(/\+/g,'-').replace(/\//g,'_').replace(/=/g,'');}
@@ -381,13 +384,16 @@ async function startOAuth(role){
 async function handleCallback(){
   const p=new URLSearchParams(window.location.search),code=p.get('code');
   const stateRole=p.get('state');
+  console.log('handleCallback - code:', !!code, 'state:', stateRole);
   if(!code)return;
   window.history.replaceState({},'',window.location.pathname);
   const role=stateRole||localStorage.getItem('pkce_r');
   const v=localStorage.getItem('pkce_v_'+role)||localStorage.getItem('pkce_v');
+  console.log('handleCallback - role:', role, 'verifier found:', !!v);
   if(!v||!role){console.error('Missing PKCE verifier or role',{v,role});return;}
   const res=await fetch('https://accounts.spotify.com/api/token',{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded'},body:new URLSearchParams({grant_type:'authorization_code',code,redirect_uri:REDIRECT_URI,client_id:CLIENT_ID,code_verifier:v})});
   const data=await res.json();
+  console.log('handleCallback - token response status:', res.status, 'has token:', !!data.access_token, 'error:', data.error);
   localStorage.removeItem('pkce_v_'+role);localStorage.removeItem('pkce_v');localStorage.removeItem('pkce_r');
   if(data.access_token){
     const tk=role==='source'?'tok_src':role==='dest'?'tok_dst':'tok_del';
@@ -397,7 +403,9 @@ async function handleCallback(){
 }
 
 async function fetchProfile(role){
+  console.log('fetchProfile called for role:', role, 'token exists:', !!tokens[role]);
   const r=await spGet('https://api.spotify.com/v1/me',tokens[role]);
+  console.log('fetchProfile - profile result:', r?.display_name||r?.id||'null');
   if(!r){console.error('Profile fetch failed for',role);return;}
   users[role]=r;
   const uk=role==='source'?'usr_src':role==='dest'?'usr_dst':'usr_del';
@@ -430,11 +438,19 @@ function updateAuthBar(){
 }
 
 function restoreUI(){
-  if(users.source)applyBadge('source',users.source);
-  if(users.dest)  applyBadge('dest',users.dest);
-  if(users.delete)applyBadge('delete',users.delete);
-  if(users.source||users.dest||users.delete)updateAuthBar();
-  if(users.source&&tokens.source){showBrowser();loadContent();}
+  // Reload persisted users from localStorage in case handleCallback updated them
+  if(!users.source) users.source = tryParse(localStorage.getItem('usr_src'));
+  if(!users.dest)   users.dest   = tryParse(localStorage.getItem('usr_dst'));
+  if(!users.delete) users.delete = tryParse(localStorage.getItem('usr_del'));
+  if(!tokens.source) tokens.source = localStorage.getItem('tok_src')||null;
+  if(!tokens.dest)   tokens.dest   = localStorage.getItem('tok_dst')||null;
+  if(!tokens.delete) tokens.delete = localStorage.getItem('tok_del')||null;
+
+  if(users.source) applyBadge('source',users.source);
+  if(users.dest)   applyBadge('dest',users.dest);
+  if(users.delete) applyBadge('delete',users.delete);
+  if(users.source||users.dest||users.delete) updateAuthBar();
+  if(users.source&&tokens.source){ showBrowser(); loadContent(); }
   checkReady();
 }
 

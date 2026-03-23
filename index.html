@@ -205,7 +205,7 @@
       <h1><span class="grad">VHS Streaming</span> <span class="plain">– Spotify Tools</span></h1>
       <p>MUSIC ACCOUNT MANAGER</p>
     </div>
-    <span class="version-tag">v3.3</span>
+    <span class="version-tag">v3.4</span>
   </header>
 
   <div class="hero">
@@ -515,15 +515,15 @@ async function spAll(url,token,key='items'){
   }
   return items;
 }
-async function spReq(method, url, token, body = null, imageBlob = null) {
+async function spReq(method, url, token, body = null, imageBlob = null, imageBase64 = null) {
   while (true) {
     let opts = {
       method,
       headers: { Authorization: 'Bearer ' + token }
     };
-    if (imageBlob) {
+    if (imageBase64) {
       opts.headers['Content-Type'] = 'image/jpeg';
-      opts.body = imageBlob;
+      opts.body = imageBase64;
     } else if (body) {
       opts.headers['Content-Type'] = 'application/json';
       opts.body = JSON.stringify(body);
@@ -700,14 +700,21 @@ async function pushArtists(ids, dstToken) {
   }
 }
 async function pushPlaylists(playlists, srcToken, dstToken) {
-  const own = playlists.filter(p => p.owner?.id === users.source?.id);
+  // Only transfer playlists owned by the source user
+  const srcUserId = users.source?.id;
+  const own = playlists.filter(p => p.owner?.id === srcUserId);
+  console.log('pushPlaylists: total playlists', playlists.length, 'own:', own.length, 'srcUserId:', srcUserId);
+
   if (own.length === 0) {
     log('No hay playlists propias para transferir', 'info');
     return;
   }
+
   for (let idx = 0; idx < own.length; idx++) {
     const pl = own[idx];
     log(`Procesando "${esc(pl.name)}"...`, 'info');
+
+    // Create playlist in destination
     const createRes = await spReq('POST', 'https://api.spotify.com/v1/me/playlists', dstToken, {
       name: pl.name || 'Playlist transferida',
       description: pl.description || '',
@@ -723,23 +730,28 @@ async function pushPlaylists(playlists, srcToken, dstToken) {
     if (!newPl?.id) { log(`❌ No ID recibido para "${esc(pl.name)}"`, 'error'); continue; }
     log(`✓ Playlist creada: "${esc(pl.name)}"`, 'success');
 
-    // Transfer cover image - resize to avoid 413, skip on any error
+    // Transfer cover image as base64
     try {
       const imgRes = await spGet(`https://api.spotify.com/v1/playlists/${pl.id}/images`, srcToken);
       if (Array.isArray(imgRes) && imgRes[0]?.url) {
         const imgFetch = await fetch(imgRes[0].url);
         if (imgFetch.ok) {
           const blob = await imgFetch.blob();
-          // Resize image using canvas to keep under 256KB limit
-          const resizedBlob = await resizeImageBlob(blob, 300, 300, 0.7);
-          const uploadRes = await spReq('PUT', `https://api.spotify.com/v1/playlists/${newPl.id}/images`, dstToken, null, resizedBlob);
-          if (uploadRes.ok) { log('✓ Cover image transferida', 'success'); }
-          else { log(`⚠ Cover omitida (status ${uploadRes.status})`, 'info'); }
+          // Convert to base64 via canvas (resize to 300x300 to stay under 256KB)
+          const base64 = await blobToBase64Resized(blob, 300, 0.8);
+          if (base64) {
+            // Send as base64 string in body
+            const uploadRes = await spReq('PUT',
+              `https://api.spotify.com/v1/playlists/${newPl.id}/images`,
+              dstToken, null, null, base64);
+            if (uploadRes.ok) { log('✓ Cover image transferida', 'success'); }
+            else { log(`⚠ Cover omitida (status ${uploadRes.status})`, 'info'); }
+          }
         }
       }
     } catch (e) { log('⚠ Cover image omitida', 'info'); console.warn('Cover skipped:', e.message); }
 
-    // Transfer tracks - use srcToken for reading, handle 403 gracefully
+    // Transfer tracks
     try {
       const plTracks = await spAll(`https://api.spotify.com/v1/playlists/${pl.id}/tracks?limit=100`, srcToken);
       let addedCount = 0;
@@ -755,28 +767,31 @@ async function pushPlaylists(playlists, srcToken, dstToken) {
     } catch(e) {
       log(`⚠ No se pudieron leer tracks de "${esc(pl.name)}"`, 'info');
     }
+
     setProgress(55 + ((idx + 1) / own.length) * 25, `Playlists: ${idx + 1}/${own.length}`);
   }
 }
 
-// Helper: resize image blob using canvas
-async function resizeImageBlob(blob, maxW, maxH, quality) {
+// Convert blob to resized base64 string (for Spotify cover upload)
+async function blobToBase64Resized(blob, size, quality) {
   return new Promise((resolve) => {
     const img = new Image();
     const url = URL.createObjectURL(blob);
     img.onload = () => {
       URL.revokeObjectURL(url);
       const canvas = document.createElement('canvas');
-      let w = img.width, h = img.height;
-      if (w > maxW || h > maxH) {
-        const ratio = Math.min(maxW/w, maxH/h);
-        w = Math.round(w*ratio); h = Math.round(h*ratio);
-      }
-      canvas.width = w; canvas.height = h;
-      canvas.getContext('2d').drawImage(img, 0, 0, w, h);
-      canvas.toBlob(resolve, 'image/jpeg', quality);
+      canvas.width = size; canvas.height = size;
+      const ctx = canvas.getContext('2d');
+      // Draw centered square crop
+      const s = Math.min(img.width, img.height);
+      const sx = (img.width - s) / 2;
+      const sy = (img.height - s) / 2;
+      ctx.drawImage(img, sx, sy, s, s, 0, 0, size, size);
+      // Get base64 without the data:image/jpeg;base64, prefix
+      const dataUrl = canvas.toDataURL('image/jpeg', quality);
+      resolve(dataUrl.split(',')[1]);
     };
-    img.onerror = () => { URL.revokeObjectURL(url); resolve(blob); };
+    img.onerror = () => { URL.revokeObjectURL(url); resolve(null); };
     img.src = url;
   });
 }

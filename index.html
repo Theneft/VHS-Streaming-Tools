@@ -205,7 +205,7 @@
       <h1><span class="grad">VHS Streaming</span> <span class="plain">– Spotify Tools</span></h1>
       <p>MUSIC ACCOUNT MANAGER</p>
     </div>
-    <span class="version-tag">v3.0</span>
+    <span class="version-tag">v3.1</span>
   </header>
 
   <div class="hero">
@@ -418,12 +418,22 @@ async function fetchProfile(role){
 
 function applyBadge(role,u){
   const name=u.display_name||u.id,img=u.images?.[0]?.url||'';
-  const pfx=role==='delete'?'delete':role;
-  document.getElementById(pfx+'Btn').style.display='none';
-  document.getElementById(pfx+'Badge').classList.add('visible');
-  document.getElementById(pfx+'UserName').textContent=name;
-  if(img){const i=document.getElementById(pfx+'AvatarImg');i.src=img;i.style.display='block';document.getElementById(pfx+'AvatarPlaceholder').style.display='none';}
-  if(role==='delete')document.getElementById('deleteBtn').disabled=false;
+  // Connect button IDs differ per role
+  const connectBtnId = role==='source'?'sourceBtn':role==='dest'?'destBtn':'deleteAccBtn';
+  const badgeId      = role==='source'?'sourceBadge':role==='dest'?'destBadge':'deleteBadge';
+  const nameId       = role==='source'?'sourceUserName':role==='dest'?'destUserName':'deleteUserName';
+  const imgId        = role==='source'?'sourceAvatarImg':role==='dest'?'destAvatarImg':'deleteAvatarImg';
+  const placeholderId= role==='source'?'sourceAvatarPlaceholder':role==='dest'?'destAvatarPlaceholder':'deleteAvatarPlaceholder';
+
+  document.getElementById(connectBtnId).style.display='none';
+  document.getElementById(badgeId).classList.add('visible');
+  document.getElementById(nameId).textContent=name;
+  if(img){
+    const i=document.getElementById(imgId);
+    i.src=img;i.style.display='block';
+    document.getElementById(placeholderId).style.display='none';
+  }
+  if(role==='delete') document.getElementById('deleteBtn').disabled=false;
 }
 
 function updateAuthBar(){
@@ -461,12 +471,18 @@ function disconnectRole(role,silent=false){
   const uk=role==='source'?'usr_src':role==='dest'?'usr_dst':'usr_del';
   tokens[role]=null;users[role]=null;
   localStorage.removeItem(tk);localStorage.removeItem(uk);
-  const pfx=role==='delete'?'delete':role;
-  document.getElementById(pfx+'Btn').style.display='';
-  document.getElementById(pfx+'Badge').classList.remove('visible');
-  const ai=document.getElementById(pfx+'AvatarImg');if(ai){ai.style.display='none';}
-  const ap=document.getElementById(pfx+'AvatarPlaceholder');if(ap){ap.style.display='flex';}
-  document.getElementById(pfx+'UserName').textContent='';
+
+  const connectBtnId = role==='source'?'sourceBtn':role==='dest'?'destBtn':'deleteAccBtn';
+  const badgeId      = role==='source'?'sourceBadge':role==='dest'?'destBadge':'deleteBadge';
+  const nameId       = role==='source'?'sourceUserName':role==='dest'?'destUserName':'deleteUserName';
+  const imgId        = role==='source'?'sourceAvatarImg':role==='dest'?'destAvatarImg':'deleteAvatarImg';
+  const placeholderId= role==='source'?'sourceAvatarPlaceholder':role==='dest'?'destAvatarPlaceholder':'deleteAvatarPlaceholder';
+
+  document.getElementById(connectBtnId).style.display='';
+  document.getElementById(badgeId).classList.remove('visible');
+  const ai=document.getElementById(imgId);if(ai){ai.style.display='none';}
+  const ap=document.getElementById(placeholderId);if(ap){ap.style.display='flex';}
+  document.getElementById(nameId).textContent='';
   if(role==='delete')document.getElementById('deleteBtn').disabled=true;
   if(role==='source'){srcContent={tracks:[],albums:[],artists:[],playlists:[],episodes:[]};document.getElementById('contentBrowser').classList.remove('visible');}
   if(!silent)checkReady();

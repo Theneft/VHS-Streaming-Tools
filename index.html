@@ -205,7 +205,7 @@
       <h1><span class="grad">VHS Streaming</span> <span class="plain">– Spotify Tools</span></h1>
       <p>MUSIC ACCOUNT MANAGER</p>
     </div>
-    <span class="version-tag">v3.5</span>
+    <span class="version-tag">v3.6</span>
   </header>
 
   <div class="hero">
@@ -702,6 +702,8 @@ async function pushArtists(ids, dstToken) {
 async function pushPlaylists(playlists, srcToken, dstToken) {
   // Only transfer playlists owned by the source user
   const srcUserId = users.source?.id;
+  console.log('pushPlaylists DEBUG - srcUserId:', srcUserId);
+  console.log('pushPlaylists DEBUG - sample owners:', playlists.slice(0,5).map(p => p.owner?.id + ' | ' + p.name));
   const own = playlists.filter(p => p.owner?.id === srcUserId);
   console.log('pushPlaylists: total playlists', playlists.length, 'own:', own.length, 'srcUserId:', srcUserId);
 
@@ -713,14 +715,6 @@ async function pushPlaylists(playlists, srcToken, dstToken) {
   for (let idx = 0; idx < own.length; idx++) {
     const pl = own[idx];
     log(`Procesando "${esc(pl.name)}"...`, 'info');
-
-    // Verify we can actually read this playlist's tracks first
-    const testRead = await spGet(`https://api.spotify.com/v1/playlists/${pl.id}/tracks?limit=1`, srcToken);
-    if (!testRead) {
-      log(`⚠ "${esc(pl.name)}" no es accesible, omitiendo...`, 'info');
-      setProgress(55 + ((idx + 1) / own.length) * 25, `Playlists: ${idx + 1}/${own.length}`);
-      continue;
-    }
 
     // Create playlist in destination
     const createRes = await spReq('POST', 'https://api.spotify.com/v1/me/playlists', dstToken, {

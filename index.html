@@ -205,7 +205,7 @@
       <h1><span class="grad">VHS Streaming</span> <span class="plain">– Spotify Tools</span></h1>
       <p>MUSIC ACCOUNT MANAGER</p>
     </div>
-    <span class="version-tag">v4.0</span>
+    <span class="version-tag">v4.1</span>
   </header>
 
   <div class="hero">
@@ -776,20 +776,37 @@ async function pushPlaylists(playlists, srcToken, dstToken) {
         }
       } catch(e) { console.warn('Tracks fetch error:', e); }
 
+      // Debug: check structure of first item
+      if (plTracks.length > 0) {
+        const sample = plTracks[0];
+        console.log('Sample item keys:', Object.keys(sample));
+        console.log('Sample track uri:', sample?.track?.uri);
+        console.log('Sample track type:', sample?.track?.type);
+      }
+
       let addedCount = 0;
       for (let i = 0; i < plTracks.length; i += 100) {
-        const uris = plTracks.slice(i, i + 100)
-          .map(t => t.track?.uri || t.episode?.uri)
-          .filter(Boolean);
+        const batch = plTracks.slice(i, i + 100);
+        // Handle both track and episode items, skip null tracks
+        const uris = batch
+          .map(item => {
+            if (item?.track?.uri) return item.track.uri;
+            if (item?.episode?.uri) return item.episode.uri;
+            // Some items have uri directly on the track object
+            if (item?.track?.id) return `spotify:track:${item.track.id}`;
+            return null;
+          })
+          .filter(uri => uri && !uri.includes('spotify:local:'));
+        console.log(`Batch ${i}: ${batch.length} items -> ${uris.length} valid uris`);
         if (uris.length) {
           const addRes = await spReq('POST', `https://api.spotify.com/v1/playlists/${newPl.id}/tracks`, dstToken, { uris });
-          console.log('POST tracks status:', addRes.status, 'uris count:', uris.length, 'sample uri:', uris[0]);
+          console.log('POST tracks status:', addRes.status, 'uris:', uris.length, 'sample:', uris[0]);
           if (addRes.ok) {
             addedCount += uris.length;
           } else {
             const errTxt = await addRes.text().catch(()=>'');
             console.error('POST tracks failed:', errTxt);
-            log(`⚠ Fallo POST tracks: ${addRes.status} ${errTxt}`, 'error');
+            log(`⚠ Fallo POST tracks: ${addRes.status}`, 'error');
           }
           await sleep(600);
         }

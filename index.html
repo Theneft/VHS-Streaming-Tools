@@ -205,7 +205,7 @@
       <h1><span class="grad">VHS Streaming</span> <span class="plain">– Spotify Tools</span></h1>
       <p>MUSIC ACCOUNT MANAGER</p>
     </div>
-    <span class="version-tag">v4.1</span>
+    <span class="version-tag">v4.2</span>
   </header>
 
   <div class="hero">
@@ -780,21 +780,18 @@ async function pushPlaylists(playlists, srcToken, dstToken) {
       if (plTracks.length > 0) {
         const sample = plTracks[0];
         console.log('Sample item keys:', Object.keys(sample));
-        console.log('Sample track uri:', sample?.track?.uri);
-        console.log('Sample track type:', sample?.track?.type);
+        console.log('Sample item uri:', sample?.item?.uri || sample?.track?.uri);
+        console.log('Sample item type:', sample?.item?.type || sample?.track?.type);
       }
 
       let addedCount = 0;
       for (let i = 0; i < plTracks.length; i += 100) {
         const batch = plTracks.slice(i, i + 100);
-        // Handle both track and episode items, skip null tracks
+        // /items endpoint uses 'item' key (not 'track')
         const uris = batch
-          .map(item => {
-            if (item?.track?.uri) return item.track.uri;
-            if (item?.episode?.uri) return item.episode.uri;
-            // Some items have uri directly on the track object
-            if (item?.track?.id) return `spotify:track:${item.track.id}`;
-            return null;
+          .map(i => {
+            const uri = i?.item?.uri || i?.track?.uri || i?.episode?.uri;
+            return uri;
           })
           .filter(uri => uri && !uri.includes('spotify:local:'));
         console.log(`Batch ${i}: ${batch.length} items -> ${uris.length} valid uris`);

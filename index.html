@@ -205,7 +205,7 @@
       <h1><span class="grad">VHS Streaming</span> <span class="plain">– Spotify Tools</span></h1>
       <p>MUSIC ACCOUNT MANAGER</p>
     </div>
-    <span class="version-tag">v4.2</span>
+    <span class="version-tag">v4.3</span>
   </header>
 
   <div class="hero">
@@ -371,6 +371,7 @@ let cancelTransfer = false;
 function tryParse(s){try{return s?JSON.parse(s):null;}catch{return null;}}
 
 window.onload = async () => {
+  console.log('App loaded, SCOPES:', SCOPES);
   await handleCallback();
   restoreUI();
 };
@@ -726,7 +727,8 @@ async function pushPlaylists(playlists, srcToken, dstToken) {
       const createRes = await spReq('POST', 'https://api.spotify.com/v1/me/playlists', dstToken, {
         name: pl.name || 'Playlist transferida',
         description: pl.description || '',
-        public: pl.public ?? false
+        public: false,
+        collaborative: false
       });
       console.log('CREATE playlist status:', createRes.status, pl.name);
       if (!createRes.ok) {

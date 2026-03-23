@@ -205,7 +205,7 @@
       <h1><span class="grad">VHS Streaming</span> <span class="plain">– Spotify Tools</span></h1>
       <p>MUSIC ACCOUNT MANAGER</p>
     </div>
-    <span class="version-tag">v2.7</span>
+    <span class="version-tag">v2.8</span>
   </header>
 
   <div class="hero">
@@ -374,19 +374,21 @@ async function genChal(v){const d=await crypto.subtle.digest('SHA-256',new TextE
 
 async function startOAuth(role){
   const v=await genVer(),c=await genChal(v);
-  localStorage.setItem('pkce_v',v);localStorage.setItem('pkce_r',role);
+  localStorage.setItem('pkce_v_'+role,v);localStorage.setItem('pkce_r',role);
   window.location='https://accounts.spotify.com/authorize?'+new URLSearchParams({response_type:'code',client_id:CLIENT_ID,scope:SCOPES,redirect_uri:REDIRECT_URI,code_challenge_method:'S256',code_challenge:c,state:role});
 }
 
 async function handleCallback(){
   const p=new URLSearchParams(window.location.search),code=p.get('code');
+  const stateRole=p.get('state');
   if(!code)return;
   window.history.replaceState({},'',window.location.pathname);
-  const v=localStorage.getItem('pkce_v'),role=localStorage.getItem('pkce_r');
-  if(!v||!role)return;
+  const role=stateRole||localStorage.getItem('pkce_r');
+  const v=localStorage.getItem('pkce_v_'+role)||localStorage.getItem('pkce_v');
+  if(!v||!role){console.error('Missing PKCE verifier or role',{v,role});return;}
   const res=await fetch('https://accounts.spotify.com/api/token',{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded'},body:new URLSearchParams({grant_type:'authorization_code',code,redirect_uri:REDIRECT_URI,client_id:CLIENT_ID,code_verifier:v})});
   const data=await res.json();
-  localStorage.removeItem('pkce_v');localStorage.removeItem('pkce_r');
+  localStorage.removeItem('pkce_v_'+role);localStorage.removeItem('pkce_v');localStorage.removeItem('pkce_r');
   if(data.access_token){
     const tk=role==='source'?'tok_src':role==='dest'?'tok_dst':'tok_del';
     tokens[role]=data.access_token;localStorage.setItem(tk,data.access_token);

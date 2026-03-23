@@ -272,7 +272,7 @@
       <h1><span class="grad">VHS Streaming</span> – Spotify Tools</h1>
       <p>MUSIC ACCOUNT MANAGER</p>
     </div>
-    <span class="version-tag">v1.4</span>
+    <span class="version-tag">v1.5</span>
   </header>
 
   <!-- HERO -->
@@ -636,7 +636,10 @@ async function startDelete(){
     setProgress(5,`${tracks.length} canciones encontradas`);
     for(let i=0;i<tracks.length;i+=50){
       const ids=tracks.slice(i,i+50).map(t=>t.track?.id).filter(Boolean);
-      if(ids.length)await spotifyReq('DELETE','https://api.spotify.com/v1/me/tracks',token,{ids});
+      if(ids.length){
+        const r=await spotifyReq('DELETE',`https://api.spotify.com/v1/me/tracks`,token,{ids});
+        console.log('🗑 tracks delete status:', r.status);
+      }
       setProgress(5+(i/Math.max(tracks.length,1))*18,`Canciones: ${Math.min(i+50,tracks.length)}/${tracks.length}`);
       await sleep(400);
     }
@@ -647,7 +650,10 @@ async function startDelete(){
     setProgress(25,`${albums.length} álbumes encontrados`);
     for(let i=0;i<albums.length;i+=20){
       const ids=albums.slice(i,i+20).map(a=>a.album?.id).filter(Boolean);
-      if(ids.length)await spotifyReq('DELETE','https://api.spotify.com/v1/me/albums',token,{ids});
+      if(ids.length){
+        const r=await spotifyReq('DELETE',`https://api.spotify.com/v1/me/albums?ids=${ids.join(',')}`,token);
+        console.log('🗑 albums delete status:', r.status);
+      }
       setProgress(25+(i/Math.max(albums.length,1))*18,`Álbumes: ${Math.min(i+20,albums.length)}/${albums.length}`);
       await sleep(400);
     }
@@ -658,7 +664,10 @@ async function startDelete(){
     setProgress(45,`${artists.length} artistas encontrados`);
     for(let i=0;i<artists.length;i+=50){
       const ids=artists.slice(i,i+50).map(a=>a.id).filter(Boolean);
-      if(ids.length)await spotifyReq('DELETE',`https://api.spotify.com/v1/me/following?type=artist&ids=${ids.join(',')}`,token);
+      if(ids.length){
+        const r=await spotifyReq('DELETE',`https://api.spotify.com/v1/me/following?type=artist&ids=${ids.join(',')}`,token);
+        console.log('🗑 artists unfollow status:', r.status);
+      }
       setProgress(45+(i/Math.max(artists.length,1))*18,`Artistas: ${Math.min(i+50,artists.length)}/${artists.length}`);
       await sleep(400);
     }

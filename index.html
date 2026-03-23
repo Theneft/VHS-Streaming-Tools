@@ -205,7 +205,7 @@
       <h1><span class="grad">VHS Streaming</span> <span class="plain">– Spotify Tools</span></h1>
       <p>MUSIC ACCOUNT MANAGER</p>
     </div>
-    <span class="version-tag">v2.4</span>
+    <span class="version-tag">v2.6</span>
   </header>
 
   <div class="hero">
@@ -651,25 +651,45 @@ async function pushArtists(ids, dstToken) {
     await sleep(400);
   }
 }
-async function pushPlaylists(playlists,srcToken,dstToken,dstUserId){
-  const own=playlists.filter(p=>p.owner?.id===users.source?.id);
-  for(let idx=0;idx<own.length;idx++){
-    const pl=own[idx];
-    const res=await spReq('POST',`https://api.spotify.com/v1/users/${dstUserId}/playlists`,dstToken,{name:pl.name,description:pl.description||'',public:pl.public??false});
-    let newPl={};
-    try{newPl=await res.json();}catch(e){console.error('playlist create parse error',e);}
-    if(newPl.id){
-      const plTracks=await spAll(`https://api.spotify.com/v1/playlists/${pl.id}/tracks?limit=100`,srcToken);
-      for(let i=0;i<plTracks.length;i+=100){
-        const uris=plTracks.slice(i,i+100).map(t=>t.track?.uri).filter(Boolean);
-        if(uris.length){const r=await spReq('POST',`https://api.spotify.com/v1/playlists/${newPl.id}/tracks`,dstToken,{uris});console.log('playlist tracks POST',r.status);}
-        await sleep(400);
-      }
-      log(`✓ "${esc(pl.name)}" (${plTracks.length} canciones)`,'success');
-    } else {
-      log(`⚠ No se pudo crear "${esc(pl.name)}" — ${JSON.stringify(newPl)}`,'error');
+async function pushPlaylists(playlists, srcToken, dstToken) {
+  const own = playlists.filter(p => p.owner?.id === users.source?.id);
+  if (own.length === 0) {
+    log('No hay playlists propias para transferir','info');
+    return;
+  }
+  for (let idx = 0; idx < own.length; idx++) {
+    const pl = own[idx];
+    const res = await spReq('POST', 'https://api.spotify.com/v1/me/playlists', dstToken, {
+      name: pl.name || 'Playlist transferida',
+      description: pl.description || 'Transferida desde cuenta antigua via VHS Streaming Tools',
+      public: pl.public ?? false
+    });
+    let newPl;
+    try {
+      newPl = await res.json();
+    } catch (e) {
+      console.error('Error al parsear respuesta de creacion de playlist', e);
+      log(`Error creando "${esc(pl.name)}" - status: ${res.status}`,'error');
+      continue;
     }
-    setProgress(((idx+1)/own.length)*100,`${idx+1}/${own.length}`);
+    if (newPl && newPl.id) {
+      log(`Creando "${esc(pl.name)}" en destino...`,'info');
+      const plTracks = await spAll(`https://api.spotify.com/v1/playlists/${pl.id}/tracks?limit=100`, srcToken);
+      let addedCount = 0;
+      for (let i = 0; i < plTracks.length; i += 100) {
+        const uris = plTracks.slice(i, i + 100).map(t => t.track?.uri).filter(Boolean);
+        if (uris.length) {
+          const addRes = await spReq('POST', `https://api.spotify.com/v1/playlists/${newPl.id}/tracks`, dstToken, { uris });
+          console.log('Aniadiendo tracks a playlist status:', addRes.status);
+          if (addRes.ok) addedCount += uris.length;
+          await sleep(600);
+        }
+      }
+      log(`✓ "${esc(pl.name)}" creada con ${addedCount}/${plTracks.length} tracks`,'success');
+    } else {
+      log(`⚠ Fallo creacion de "${esc(pl.name)}" - status: ${res.status}`,'error');
+    }
+    setProgress(55 + ((idx + 1) / own.length) * 25, `Playlists: ${idx + 1}/${own.length}`);
   }
 }
 async function pushEpisodes(ids, dstToken) {
@@ -698,7 +718,7 @@ async function transferSelected(){
     if(currentTab==='tracks'){const ids=items.map(t=>t.track?.id).filter(Boolean);await pushTracks(ids,dst);}
     else if(currentTab==='albums'){const ids=items.map(a=>a.album?.id).filter(Boolean);await pushAlbums(ids,dst);}
     else if(currentTab==='artists'){const ids=items.map(a=>a.id).filter(Boolean);await pushArtists(ids,dst);}
-    else if(currentTab==='playlists'){await pushPlaylists(items,tokens.source,dst,users.dest?.id);}
+    else if(currentTab==='playlists'){await pushPlaylists(items,tokens.source,dst);}
     else if(currentTab==='episodes'){const ids=items.map(e=>e.episode?.id).filter(Boolean);await pushEpisodes(ids,dst);}
     setProgress(100,'¡Completado!');
     log(`🎉 ${items.length} ${TAB_LABELS[currentTab]} transferidos`,'success');
@@ -718,7 +738,7 @@ async function transferCurrentTab(){
     if(currentTab==='tracks'){await pushTracks(data.map(t=>t.track?.id).filter(Boolean),dst);}
     else if(currentTab==='albums'){await pushAlbums(data.map(a=>a.album?.id).filter(Boolean),dst);}
     else if(currentTab==='artists'){await pushArtists(data.map(a=>a.id).filter(Boolean),dst);}
-    else if(currentTab==='playlists'){await pushPlaylists(data,src,dst,users.dest?.id);}
+    else if(currentTab==='playlists'){await pushPlaylists(data, src, dst);}
     else if(currentTab==='episodes'){await pushEpisodes(data.map(e=>e.episode?.id).filter(Boolean),dst);}
     setProgress(100,'¡Completado!');
     log(`🎉 Todos los ${TAB_LABELS[currentTab]} transferidos`,'success');
@@ -753,7 +773,7 @@ async function startFullTransfer(){
     log(`✓ ${arids.length} artistas`,'success');setProgress(55,'Artistas ✓');
 
     log('Transfiriendo playlists...','info');
-    await pushPlaylists(srcContent.playlists,src,dst,users.dest?.id);
+    await pushPlaylists(srcContent.playlists, src, dst);
     log(`✓ playlists`,'success');setProgress(80,'Playlists ✓');
 
     log('Transfiriendo episodios...','info');

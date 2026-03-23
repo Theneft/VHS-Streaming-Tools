@@ -205,7 +205,7 @@
       <h1><span class="grad">VHS Streaming</span> <span class="plain">– Spotify Tools</span></h1>
       <p>MUSIC ACCOUNT MANAGER</p>
     </div>
-    <span class="version-tag">v3.6</span>
+    <span class="version-tag">v3.7</span>
   </header>
 
   <div class="hero">
@@ -700,62 +700,71 @@ async function pushArtists(ids, dstToken) {
   }
 }
 async function pushPlaylists(playlists, srcToken, dstToken) {
-  // Only transfer playlists owned by the source user
   const srcUserId = users.source?.id;
-  console.log('pushPlaylists DEBUG - srcUserId:', srcUserId);
-  console.log('pushPlaylists DEBUG - sample owners:', playlists.slice(0,5).map(p => p.owner?.id + ' | ' + p.name));
-  const own = playlists.filter(p => p.owner?.id === srcUserId);
-  console.log('pushPlaylists: total playlists', playlists.length, 'own:', own.length, 'srcUserId:', srcUserId);
+  // Separate own playlists from followed ones
+  const own     = playlists.filter(p => p.owner?.id === srcUserId);
+  const others  = playlists.filter(p => p.owner?.id !== srcUserId);
 
-  if (own.length === 0) {
-    log('No hay playlists propias para transferir', 'info');
-    return;
-  }
+  log(`Playlists propias: ${own.length} | Seguidas: ${others.length}`, 'info');
 
-  for (let idx = 0; idx < own.length; idx++) {
-    const pl = own[idx];
-    log(`Procesando "${esc(pl.name)}"...`, 'info');
+  // Process ALL playlists - own ones get full transfer, others just get followed
+  const all = [...own, ...others];
 
-    // Create playlist in destination
-    const createRes = await spReq('POST', 'https://api.spotify.com/v1/me/playlists', dstToken, {
-      name: pl.name || 'Playlist transferida',
-      description: pl.description || '',
-      public: pl.public ?? false
-    });
-    if (!createRes.ok) {
-      log(`❌ Falló creación de "${esc(pl.name)}" - status: ${createRes.status}`, 'error');
-      continue;
-    }
-    let newPl;
-    try { newPl = await createRes.json(); }
-    catch (e) { log(`❌ Error parseando creación de "${esc(pl.name)}"`, 'error'); continue; }
-    if (!newPl?.id) { log(`❌ No ID recibido para "${esc(pl.name)}"`, 'error'); continue; }
-    log(`✓ Playlist creada: "${esc(pl.name)}"`, 'success');
+  for (let idx = 0; idx < all.length; idx++) {
+    const pl = all[idx];
+    const isOwn = pl.owner?.id === srcUserId;
 
-    // Transfer cover image as base64
-    try {
-      const imgRes = await spGet(`https://api.spotify.com/v1/playlists/${pl.id}/images`, srcToken);
-      if (Array.isArray(imgRes) && imgRes[0]?.url) {
-        const imgFetch = await fetch(imgRes[0].url);
-        if (imgFetch.ok) {
-          const blob = await imgFetch.blob();
-          // Convert to base64 via canvas (resize to 300x300 to stay under 256KB)
-          const base64 = await blobToBase64Resized(blob, 300, 0.8);
-          if (base64) {
-            // Send as base64 string in body
-            const uploadRes = await spReq('PUT',
-              `https://api.spotify.com/v1/playlists/${newPl.id}/images`,
-              dstToken, null, null, base64);
-            if (uploadRes.ok) { log('✓ Cover image transferida', 'success'); }
-            else { log(`⚠ Cover omitida (status ${uploadRes.status})`, 'info'); }
+    if (isOwn) {
+      // ── OWN PLAYLIST: create + transfer cover + transfer tracks ──
+      log(`Creando playlist propia: "${esc(pl.name)}"...`, 'info');
+
+      const createRes = await spReq('POST', 'https://api.spotify.com/v1/me/playlists', dstToken, {
+        name: pl.name || 'Playlist transferida',
+        description: pl.description || '',
+        public: pl.public ?? false
+      });
+      if (!createRes.ok) {
+        log(`❌ Falló creación de "${esc(pl.name)}"`, 'error');
+        setProgress(55 + ((idx + 1) / all.length) * 25, `Playlists: ${idx + 1}/${all.length}`);
+        continue;
+      }
+      let newPl;
+      try { newPl = await createRes.json(); }
+      catch(e) { log(`❌ Error parseando playlist "${esc(pl.name)}"`, 'error'); continue; }
+      if (!newPl?.id) { log(`❌ No ID para "${esc(pl.name)}"`, 'error'); continue; }
+
+      // Cover image
+      try {
+        const imgRes = await spGet(`https://api.spotify.com/v1/playlists/${pl.id}/images`, srcToken);
+        if (Array.isArray(imgRes) && imgRes[0]?.url) {
+          const imgFetch = await fetch(imgRes[0].url);
+          if (imgFetch.ok) {
+            const blob = await imgFetch.blob();
+            const base64 = await blobToBase64Resized(blob, 300, 0.8);
+            if (base64) {
+              const upRes = await spReq('PUT', `https://api.spotify.com/v1/playlists/${newPl.id}/images`, dstToken, null, null, base64);
+              if (upRes.ok) log('✓ Cover transferida', 'success');
+            }
           }
         }
-      }
-    } catch (e) { log('⚠ Cover image omitida', 'info'); console.warn('Cover skipped:', e.message); }
+      } catch(e) { console.warn('Cover skipped:', e.message); }
 
-    // Transfer tracks
-    try {
-      const plTracks = await spAll(`https://api.spotify.com/v1/playlists/${pl.id}/tracks?limit=100`, srcToken);
+      // Tracks - fetch using source token with explicit error handling
+      let plTracks = [];
+      try {
+        const firstPage = await spGet(`https://api.spotify.com/v1/playlists/${pl.id}/tracks?limit=100`, srcToken);
+        if (firstPage) {
+          plTracks = firstPage.items || [];
+          let nextUrl = firstPage.next;
+          while (nextUrl) {
+            const page = await spGet(nextUrl, srcToken);
+            if (!page) break;
+            plTracks = plTracks.concat(page.items || []);
+            nextUrl = page.next;
+          }
+        }
+      } catch(e) { console.warn('Tracks fetch error:', e); }
+
       let addedCount = 0;
       for (let i = 0; i < plTracks.length; i += 100) {
         const uris = plTracks.slice(i, i + 100).map(t => t.track?.uri).filter(Boolean);
@@ -766,15 +775,21 @@ async function pushPlaylists(playlists, srcToken, dstToken) {
         }
       }
       log(`✓ "${esc(pl.name)}" — ${addedCount}/${plTracks.length} tracks`, 'success');
-    } catch(e) {
-      log(`⚠ No se pudieron leer tracks de "${esc(pl.name)}"`, 'info');
+
+    } else {
+      // ── FOLLOWED PLAYLIST: just follow it in destination ──
+      log(`Siguiendo playlist: "${esc(pl.name)}"...`, 'info');
+      const followRes = await spReq('PUT',
+        `https://api.spotify.com/v1/playlists/${pl.id}/followers`,
+        dstToken, { public: false });
+      if (followRes.ok) log(`✓ Siguiendo "${esc(pl.name)}"`, 'success');
+      else log(`⚠ No se pudo seguir "${esc(pl.name)}"`, 'info');
     }
 
-    setProgress(55 + ((idx + 1) / own.length) * 25, `Playlists: ${idx + 1}/${own.length}`);
+    setProgress(55 + ((idx + 1) / all.length) * 25, `Playlists: ${idx + 1}/${all.length}`);
   }
 }
 
-// Convert blob to resized base64 string (for Spotify cover upload)
 async function blobToBase64Resized(blob, size, quality) {
   return new Promise((resolve) => {
     const img = new Image();
@@ -784,12 +799,9 @@ async function blobToBase64Resized(blob, size, quality) {
       const canvas = document.createElement('canvas');
       canvas.width = size; canvas.height = size;
       const ctx = canvas.getContext('2d');
-      // Draw centered square crop
       const s = Math.min(img.width, img.height);
-      const sx = (img.width - s) / 2;
-      const sy = (img.height - s) / 2;
+      const sx = (img.width - s) / 2, sy = (img.height - s) / 2;
       ctx.drawImage(img, sx, sy, s, s, 0, 0, size, size);
-      // Get base64 without the data:image/jpeg;base64, prefix
       const dataUrl = canvas.toDataURL('image/jpeg', quality);
       resolve(dataUrl.split(',')[1]);
     };

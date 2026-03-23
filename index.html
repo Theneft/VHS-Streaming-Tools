@@ -205,7 +205,7 @@
       <h1><span class="grad">VHS Streaming</span> <span class="plain">– Spotify Tools</span></h1>
       <p>MUSIC ACCOUNT MANAGER</p>
     </div>
-    <span class="version-tag">v2.2</span>
+    <span class="version-tag">v2.4</span>
   </header>
 
   <div class="hero">
@@ -487,7 +487,7 @@ async function spReq(method,url,token,body=null){
     if(body)opts.body=JSON.stringify(body);
     const r=await fetch(url,opts);
     if(r.status===429){await sleep(parseInt(r.headers.get('Retry-After')||'3')*1000);continue;}
-    if(r.status>=400){const t=await r.text();console.error('spReq error',r.status,url,t);}
+    if(r.status>=400){console.error('spReq error',r.status,method,url);}
     return r;
   }
 }
@@ -615,30 +615,39 @@ function updateCbBtns(){
 function changePage(dir){currentPage+=dir;renderTable();}
 
 // ── TRANSFER HELPERS ──────────────────────────────
-async function pushTracks(ids,dstToken){
-  for(let i=0;i<ids.length;i+=50){
-    const batch=ids.slice(i,i+50);
-    const r=await spReq('PUT','https://api.spotify.com/v1/me/tracks',dstToken,{ids:batch});
-    console.log('tracks PUT',r.status,batch.length,'items');
-    setProgress((i/ids.length)*100,`${Math.min(i+50,ids.length)}/${ids.length}`);
+async function pushTracks(ids, dstToken) {
+  for (let i = 0; i < ids.length; i += 40) {
+    const batch = ids.slice(i, i + 40).map(id => `spotify:track:${id}`).join(',');
+    if (batch) {
+      const r = await spReq('PUT', `https://api.spotify.com/v1/me/library?uris=${batch}`, dstToken);
+      console.log('tracks PUT status:', r.status);
+      if (!r.ok) { const err = await r.text(); console.error('Error saving tracks:', err); }
+    }
+    setProgress((i / ids.length) * 20, `Canciones: ${Math.min(i + 40, ids.length)}/${ids.length}`);
     await sleep(400);
   }
 }
-async function pushAlbums(ids,dstToken){
-  for(let i=0;i<ids.length;i+=20){
-    const batch=ids.slice(i,i+20);
-    const r=await spReq('PUT','https://api.spotify.com/v1/me/albums',dstToken,{ids:batch});
-    console.log('albums PUT',r.status,batch.length,'items');
-    setProgress((i/ids.length)*100,`${Math.min(i+20,ids.length)}/${ids.length}`);
+async function pushAlbums(ids, dstToken) {
+  for (let i = 0; i < ids.length; i += 40) {
+    const batch = ids.slice(i, i + 40).map(id => `spotify:album:${id}`).join(',');
+    if (batch) {
+      const r = await spReq('PUT', `https://api.spotify.com/v1/me/library?uris=${batch}`, dstToken);
+      console.log('albums PUT status:', r.status);
+      if (!r.ok) { const err = await r.text(); console.error('Error saving albums:', err); }
+    }
+    setProgress(20 + (i / ids.length) * 20, `Albums: ${Math.min(i + 40, ids.length)}/${ids.length}`);
     await sleep(400);
   }
 }
-async function pushArtists(ids,dstToken){
-  for(let i=0;i<ids.length;i+=50){
-    const batch=ids.slice(i,i+50).join(',');
-    const r=await spReq('PUT',`https://api.spotify.com/v1/me/following?type=artist&ids=${batch}`,dstToken);
-    console.log('artists PUT',r.status);
-    setProgress((i/ids.length)*100,`${Math.min(i+50,ids.length)}/${ids.length}`);
+async function pushArtists(ids, dstToken) {
+  for (let i = 0; i < ids.length; i += 40) {
+    const batch = ids.slice(i, i + 40).map(id => `spotify:artist:${id}`).join(',');
+    if (batch) {
+      const r = await spReq('PUT', `https://api.spotify.com/v1/me/library?uris=${batch}`, dstToken);
+      console.log('artists PUT status:', r.status);
+      if (!r.ok) { const err = await r.text(); console.error('Error following artists:', err); }
+    }
+    setProgress(40 + (i / ids.length) * 15, `Artistas: ${Math.min(i + 40, ids.length)}/${ids.length}`);
     await sleep(400);
   }
 }
@@ -647,7 +656,8 @@ async function pushPlaylists(playlists,srcToken,dstToken,dstUserId){
   for(let idx=0;idx<own.length;idx++){
     const pl=own[idx];
     const res=await spReq('POST',`https://api.spotify.com/v1/users/${dstUserId}/playlists`,dstToken,{name:pl.name,description:pl.description||'',public:pl.public??false});
-    const newPl=await res.json();
+    let newPl={};
+    try{newPl=await res.json();}catch(e){console.error('playlist create parse error',e);}
     if(newPl.id){
       const plTracks=await spAll(`https://api.spotify.com/v1/playlists/${pl.id}/tracks?limit=100`,srcToken);
       for(let i=0;i<plTracks.length;i+=100){
@@ -656,16 +666,21 @@ async function pushPlaylists(playlists,srcToken,dstToken,dstUserId){
         await sleep(400);
       }
       log(`✓ "${esc(pl.name)}" (${plTracks.length} canciones)`,'success');
+    } else {
+      log(`⚠ No se pudo crear "${esc(pl.name)}" — ${JSON.stringify(newPl)}`,'error');
     }
     setProgress(((idx+1)/own.length)*100,`${idx+1}/${own.length}`);
   }
 }
-async function pushEpisodes(ids,dstToken){
-  for(let i=0;i<ids.length;i+=50){
-    const batch=ids.slice(i,i+50);
-    const r=await spReq('PUT','https://api.spotify.com/v1/me/episodes',dstToken,{ids:batch});
-    console.log('episodes PUT',r.status,batch.length,'items');
-    setProgress((i/ids.length)*100,`${Math.min(i+50,ids.length)}/${ids.length}`);
+async function pushEpisodes(ids, dstToken) {
+  for (let i = 0; i < ids.length; i += 40) {
+    const batch = ids.slice(i, i + 40).map(id => `spotify:episode:${id}`).join(',');
+    if (batch) {
+      const r = await spReq('PUT', `https://api.spotify.com/v1/me/library?uris=${batch}`, dstToken);
+      console.log('episodes PUT status:', r.status);
+      if (!r.ok) { const err = await r.text(); console.error('Error saving episodes:', err); }
+    }
+    setProgress(80 + (i / ids.length) * 10, `Episodios: ${Math.min(i + 40, ids.length)}/${ids.length}`);
     await sleep(400);
   }
 }

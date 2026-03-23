@@ -272,7 +272,7 @@
       <h1><span class="grad">VHS Streaming</span> – Spotify Tools</h1>
       <p>MUSIC ACCOUNT MANAGER</p>
     </div>
-    <span class="version-tag">v1.3</span>
+    <span class="version-tag">v1.4</span>
   </header>
 
   <!-- HERO -->
@@ -493,8 +493,9 @@ function checkTransferReady() {
 
 async function spotifyGet(url,token) {
   const r = await fetch(url,{headers:{Authorization:'Bearer '+token}});
+  console.log('📡 GET', url, '→ status:', r.status);
   if (r.status===429){const w=parseInt(r.headers.get('Retry-After')||'3')*1000;await sleep(w);return spotifyGet(url,token);}
-  if (!r.ok) return null;
+  if (!r.ok) { const err = await r.text(); console.error('❌ GET error:', err); return null; }
   return r.json();
 }
 async function spotifyFetchAll(url,token,key='items') {
